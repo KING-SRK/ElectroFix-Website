@@ -11,7 +11,7 @@
 body {
   background: #f4f7fa; /* A clean, light background */
   color: #333;
-  padding-top: 5rem; /* Space for the fixed header */
+  padding: 0; /* Space for the fixed header */
 }
 
 .booking-section {
@@ -122,6 +122,24 @@ body {
 }
 
 /* booking.css */
+
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  transition: border-color 0.3s;
+  resize: none; /* User cannot manually resize */
+  overflow: hidden; /* Hides the scrollbar */
+}
+
+/* Ensure textarea also gets the focus style */
+.form-group textarea:focus {
+  outline: none;
+  border-color: #3f51b5;
+}
 
 .address-input-group {
   display: flex;
@@ -342,21 +360,96 @@ body {
 }
 
 /* Responsive Styles */
+/* --- ট্যাবলেট (iPad, Small laptops) --- */
 @media (max-width: 992px) {
   .booking-section {
-    padding: 2rem 5%;
+    padding: 2rem 3%;
+  }
+
+  .booking-card {
+    flex-direction: column-reverse; /* Put form on top of image for better flow */
+  }
+
+  .booking-image-container {
+    padding: 1rem;
+    order: 2; /* Ensures image is at the bottom in the column layout */
+  }
+  .booking-form-container {
+    padding: 2.5rem;
+    order: 1; /* Ensures form is at the top in the column layout */
+  }
+
+  .form-title {
+    font-size: 2rem;
+  }
+  .form-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .auto-detect-btn {
+    width: 50%;
+  }
+
+  .selected-service-card {
+    padding: 20px 15px;
+  }
+
+  .selected-service-card #selectedCategoryText {
+    font-size: 1.5rem;
+  }
+
+  .selected-service-card #selectedServiceText {
+    font-size: 1.1rem;
   }
 }
 
-@media (max-width: 768px) {
-  .booking-card {
-    flex-direction: column-reverse; /* Puts the image on top of the form */
+/* --- মোবাইল ডিভাইস (Phones) --- */
+@media (max-width: 600px) {
+  .booking-section {
+    padding: 1.5rem 2%;
   }
-  .booking-form-container,
-  .booking-image-container {
-    padding: 2rem;
+
+  .booking-container {
+    border-radius: 10px;
   }
+
+  .booking-form-container {
+    padding: 1.5rem;
+  }
+
   .form-title {
-    font-size: 2rem;
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .form-subtitle {
+    text-align: center;
+  }
+
+  .booking-image-container {
+    display: none; /* Hide image on small screens to save space */
+  }
+
+  .modal-content {
+    margin: 20% auto;
+    max-width: 90%;
+    padding: 20px;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .modal-buttons .btn {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .address-input-group .auto-detect-btn {
+    width: 100%; /* Make the button full-width */
+    font-size: 12px;
+    padding: 8px;
   }
 }

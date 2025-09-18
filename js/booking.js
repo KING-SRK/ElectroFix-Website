@@ -4,11 +4,13 @@ import {
   ref,
   push,
   set,
+  get,
+  child,
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 import {
   getAuth,
   onAuthStateChanged,
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"; // ➡️ এই লাইনটি যুক্ত করা হয়েছে
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 // 🔹 Firebase Config
 const firebaseConfig = {
@@ -24,7 +26,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const auth = getAuth(app); // ➡️ Auth service যুক্ত করা হয়েছে
+const auth = getAuth(app);
 
 // 🔹 DOM Elements
 const bookingForm = document.getElementById("bookingForm");
@@ -33,9 +35,16 @@ const customerAddressInput = document.getElementById("customerAddress");
 const customerPincodeInput = document.getElementById("customerPincode");
 const submitBtn = document.querySelector(".submit-btn");
 
-// 🔹 Latitude & Longitude গ্লোবালি রাখার জন্য
+// 🔹 Latitude & Longitude
 let userLatitude = null;
 let userLongitude = null;
+
+// ✅ নতুন অটো-রি-সাইজ ফাংশন
+function autoResizeTextarea(element) {
+  if (element.scrollHeight > element.clientHeight) {
+    element.style.height = element.scrollHeight + "px";
+  }
+}
 
 // 🔹 Auto-Detect Location Button
 autoDetectBtn.addEventListener("click", () => {
@@ -75,6 +84,8 @@ autoDetectBtn.addEventListener("click", () => {
 
             customerAddressInput.value = fullAddress;
             customerPincodeInput.value = address.postcode || "";
+            // ✅ এখানে অটো-রি-সাইজ ফাংশন কল করা হচ্ছে
+            autoResizeTextarea(customerAddressInput);
           } else {
             customerAddressInput.value = "Could not find a detailed address.";
           }
@@ -103,9 +114,46 @@ autoDetectBtn.addEventListener("click", () => {
 });
 
 // 🔹 Check user login state and handle form submission
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   if (user) {
-    const uid = user.uid; // ➡️ ব্যবহারকারীর UID নেওয়া হচ্ছে
+    const uid = user.uid;
+    const dbRef = ref(db);
+
+    // রিয়েলটাইম ডেটাবেস থেকে ব্যবহারকারীর তথ্য লোড করা হচ্ছে
+    try {
+      const snapshot = await get(child(dbRef, `users/${uid}`));
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        console.log("✅ User data loaded from Realtime DB:", userData);
+
+        // Fill form safely
+        document.getElementById("customerName").value = userData.fullName ?? "";
+        document.getElementById("customerPhone").value =
+          (userData.phoneNumber
+            ? userData.phoneNumber.replace(/^\+91\s?/, "")
+            : "") ?? "";
+
+        // Ensure country code is added to the phone number field
+        const customerPhoneInput = document.getElementById("customerPhone");
+        const countryCode = "+91 ";
+        if (!customerPhoneInput.value.startsWith(countryCode)) {
+          customerPhoneInput.value = countryCode + customerPhoneInput.value;
+        }
+
+        // Fill other fields if available
+        document.getElementById("customerAddress").value =
+          userData.address ?? "";
+        document.getElementById("customerPincode").value =
+          userData.postalCode ?? "";
+
+        // ✅ এখানেও অটো-রি-সাইজ ফাংশন কল করা হচ্ছে যাতে ডেটা লোড হওয়ার সাথে সাথে সাইজ ঠিক হয়ে যায়
+        autoResizeTextarea(customerAddressInput);
+      } else {
+        console.warn("⚠️ User profile not found in database!");
+      }
+    } catch (error) {
+      console.error("❌ Error loading profile:", error);
+    }
 
     // Booking Form Submit
     bookingForm.addEventListener("submit", async (e) => {
@@ -115,7 +163,6 @@ onAuthStateChanged(auth, (user) => {
       submitBtn.disabled = true;
       submitBtn.style.cursor = "not-allowed";
 
-      // যদি ইউজার Auto-Detect না করে, তাহলে latitude/longitude তোলার চেষ্টা
       if (!userLatitude || !userLongitude) {
         if (navigator.geolocation) {
           try {
@@ -143,7 +190,6 @@ onAuthStateChanged(auth, (user) => {
         status: "Pending",
       };
 
-      // ➡️ এখানে পরিবর্তন: bookings এর মধ্যে ব্যবহারকারীর UID ব্যবহার করে ডেটা সেভ করা হচ্ছে
       const bookingsRef = ref(db, `bookings/${uid}`);
       const newBookingRef = push(bookingsRef);
 
@@ -161,13 +207,12 @@ onAuthStateChanged(auth, (user) => {
       }
     });
   } else {
-    // যদি ব্যবহারকারী লগইন করা না থাকে, তাহলে লগইন পেজে রিডাইরেক্ট করা হচ্ছে
     console.log("User not logged in. Redirecting to login page.");
-    window.location.href = "../html/login.html"; // সঠিক পাথ দিন
+    // এটি অন্য স্ক্রিপ্ট দ্বারা হ্যান্ডেল করা হবে
   }
 });
 
-// 🔹 Success Popup
+// 🔹 Success Popup Function
 function showSuccessPopup() {
   const popup = document.createElement("div");
   popup.className = "success-popup";

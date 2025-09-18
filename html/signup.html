@@ -73,12 +73,12 @@
           <div class="input-group">
             <label for="address">Address</label>
             <div class="address-group">
-              <input
-                type="text"
+              <textarea
                 id="address"
                 placeholder="Enter your address"
+                rows="1"
                 required
-              />
+              ></textarea>
               <button
                 type="button"
                 class="fill-address-btn"
@@ -154,6 +154,8 @@
       const modalBackdrop = document.querySelector(".modal-backdrop");
       const successModal = document.querySelector(".success-modal");
       const loaderContainer = document.querySelector(".loader-container");
+      const addressInput = document.getElementById("address"); // ✅ নতুন লাইন
+      const signupForm = document.querySelector(".signup-form"); // ✅ নতুন লাইন
 
       function showLoader(message = "Processing...") {
         document.querySelector(".loader-text").innerText = message;
@@ -167,6 +169,12 @@
       function showSuccessPopup() {
         modalBackdrop.style.display = "block";
         successModal.style.display = "block";
+      }
+
+      // ✅ নতুন অটো-রি-সাইজ ফাংশন
+      function autoResizeTextarea() {
+        addressInput.style.height = "auto";
+        addressInput.style.height = addressInput.scrollHeight + "px";
       }
 
       // 🔹 Validation Functions
@@ -245,41 +253,40 @@
         return true;
       };
 
-      // 🔹 Get input fields
-      const phoneNumberInput = document.getElementById("phoneNumber");
-      const emailInput = document.getElementById("email");
-      const passwordInput = document.getElementById("password");
-
-      // 🔹 Add real-time validation listeners
-      phoneNumberInput.addEventListener("keyup", (e) =>
-        validatePhone(e.target.value)
-      );
-      emailInput.addEventListener("keyup", (e) =>
-        validateEmail(e.target.value)
-      );
-      passwordInput.addEventListener("keyup", (e) =>
-        validatePassword(e.target.value)
-      );
+      // 🔹 Add real-time validation and resize listeners
+      document
+        .getElementById("phoneNumber")
+        .addEventListener("keyup", (e) => validatePhone(e.target.value));
+      document
+        .getElementById("email")
+        .addEventListener("keyup", (e) => validateEmail(e.target.value));
+      document
+        .getElementById("password")
+        .addEventListener("keyup", (e) => validatePassword(e.target.value));
+      document
+        .getElementById("address")
+        .addEventListener("input", autoResizeTextarea); // ✅ নতুন লিসেনার
 
       // Also validate when a user clicks away from the field
-      phoneNumberInput.addEventListener("blur", (e) =>
-        validatePhone(e.target.value)
-      );
-      emailInput.addEventListener("blur", (e) => validateEmail(e.target.value));
-      passwordInput.addEventListener("blur", (e) =>
-        validatePassword(e.target.value)
-      );
+      document
+        .getElementById("phoneNumber")
+        .addEventListener("blur", (e) => validatePhone(e.target.value));
+      document
+        .getElementById("email")
+        .addEventListener("blur", (e) => validateEmail(e.target.value));
+      document
+        .getElementById("password")
+        .addEventListener("blur", (e) => validatePassword(e.target.value));
 
       // 🔹 Form submit
-      const form = document.querySelector(".signup-form");
-      form.addEventListener("submit", async (e) => {
+      signupForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
         // 🔹 Get all form values
         const fullName = document.getElementById("fullName").value.trim();
-        const phoneNumber = phoneNumberInput.value.trim();
-        const email = emailInput.value.trim();
-        const password = passwordInput.value;
+        const phoneNumber = document.getElementById("phoneNumber").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
         const address = document.getElementById("address").value.trim();
         const postalCode = document.getElementById("postalCode").value.trim();
 
@@ -337,7 +344,7 @@
           showSuccessPopup();
 
           setTimeout(() => {
-            form.reset();
+            signupForm.reset();
             window.location.href = "../index.html";
           }, 3000);
         } catch (error) {
@@ -396,8 +403,11 @@
               const postalCode = data.address.postcode || "";
 
               // input field এ বসাও
-              document.getElementById("address").value = address;
+              addressInput.value = address;
               document.getElementById("postalCode").value = postalCode;
+
+              // ✅ এখানে অটো-রি-সাইজ ফাংশন কল করা হচ্ছে
+              autoResizeTextarea();
 
               // 🔹 যদি ইতিমধ্যে ইউজার লগইন করা থাকে তবে সাথে সাথে DB তে সেভ করো
               const currentUser = auth.currentUser;
@@ -414,7 +424,7 @@
                 console.log("📍 Location and postal code saved in database ✅");
               }
             } catch {
-              document.getElementById("address").value = `${lat}, ${lon}`;
+              addressInput.value = `${lat}, ${lon}`;
             } finally {
               hideLoader();
             }
