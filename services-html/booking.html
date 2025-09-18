@@ -245,21 +245,29 @@
         },
       };
 
+      // ✅ নতুন ফ্ল্যাগ ভেরিয়েবল যোগ করা হয়েছে
+      let authCheckCompleted = false;
+
       // 🔹 Load user and service details
       onAuthStateChanged(auth, async (user) => {
         const authModal = document.getElementById("authModal");
         const bookingSection = document.querySelector(".booking-section");
 
         if (!user) {
-          // User is NOT logged in, show the popup
-          authModal.style.display = "block";
-          bookingSection.classList.add("blur");
+          // User is NOT logged in
+          if (!authCheckCompleted) {
+            // Show the popup only the first time
+            authModal.style.display = "block";
+            bookingSection.classList.add("blur");
+            authCheckCompleted = true; // Mark that we have shown the popup
+          }
           return; // Stop further execution
         }
 
         // If user IS logged in, hide the popup (if it was visible) and proceed
         authModal.style.display = "none";
         bookingSection.classList.remove("blur");
+        authCheckCompleted = true; // Mark as complete for logged-in users too
 
         const uid = user.uid;
         const dbRef = ref(db);
