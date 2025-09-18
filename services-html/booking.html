@@ -116,6 +116,17 @@
       </div>
     </section>
 
+    <div id="authModal" class="modal">
+      <div class="modal-content">
+        <h3>You must be logged in to book a service.</h3>
+        <p>Please log in or create an account to continue.</p>
+        <div class="modal-buttons">
+          <a href="login.html" class="btn login-btn">Log In</a>
+          <a href="signup.html" class="btn signup-btn">Sign Up</a>
+        </div>
+      </div>
+    </div>
+
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
       import {
@@ -236,10 +247,19 @@
 
       // 🔹 Load user and service details
       onAuthStateChanged(auth, async (user) => {
+        const authModal = document.getElementById("authModal");
+        const bookingSection = document.querySelector(".booking-section");
+
         if (!user) {
-          window.location.href = "login.html";
-          return;
+          // User is NOT logged in, show the popup
+          authModal.style.display = "block";
+          bookingSection.classList.add("blur");
+          return; // Stop further execution
         }
+
+        // If user IS logged in, hide the popup (if it was visible) and proceed
+        authModal.style.display = "none";
+        bookingSection.classList.remove("blur");
 
         const uid = user.uid;
         const dbRef = ref(db);
