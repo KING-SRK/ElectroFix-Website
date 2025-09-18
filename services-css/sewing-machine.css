@@ -1,0 +1,126 @@
+/* Custom Properties (CSS Variables) */
+:root {
+  --background-color: #f5f6fa; /* main page background */
+  --card-background: #ffffff; /* card or form background */
+  --text-color: #3f51b5;
+  --accent-color: linear-gradient(135deg, #3f51b5, #2196f3);
+  --accent-color-hover: linear-gradient(135deg, #2196f3, #3f51b5);
+  --text-color-light: #ffffff; /* main text color */
+  --text-color-medium: #333; /* medium text */
+  --text-color-dark: #000; /* darker text */
+  --border-color: rgba(0, 0, 0, 0.1); /* light border */
+  --spacing-small: 0.5rem;
+  --spacing-medium: 1.5rem;
+  --spacing-large: 2.5rem;
+  --border-radius: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: var(--background-color);
+  color: var(--text-color-light);
+  line-height: 1.6;
+}
+
+/* --- Main Layout --- */
+.sewing-machine-services {
+  padding: var(--spacing-large) 10%;
+}
+
+.header-content {
+  text-align: center;
+  margin-bottom: var(--spacing-large);
+}
+
+.sewing-machine-services h1 {
+  font-size: 2.5rem;
+  color: var(--text-color);
+  margin-bottom: var(--spacing-small);
+}
+
+.sewing-machine-services .intro-text {
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  color: var(--text-color-dark);
+}
+
+/* --- Service Categories Grid --- */
+.service-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+.service-category {
+  background: var(--card-background);
+  padding: var(--spacing-medium);
+  border-radius: var(--border-radius);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.service-category:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 16px rgba(0, 188, 212, 0.2);
+}
+
+.service-category h2 {
+  color: var(--text-color);
+  margin-bottom: var(--spacing-medium);
+  font-size: 1.2rem;
+}
+
+.service-category ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--spacing-medium) 0;
+}
+
+.service-category ul li {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color-medium);
+}
+
+.service-category ul li:last-child {
+  border-bottom: none;
+}
+
+/* --- Book Now Button --- */
+.option-btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent-color);
+  color: var(--text-color-light);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  width: 100%;
+}
+
+.option-btn:hover {
+  background: var(--accent-color-hover);
+  transform: scale(1.02);
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+  .sewing-machine-services {
+    padding: var(--spacing-medium);
+  }
+
+  .sewing-machine-services h1 {
+    font-size: 2rem;
+  }
+}

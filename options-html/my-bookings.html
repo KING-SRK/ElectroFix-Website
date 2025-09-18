@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Bookings - ElectroFix</title>
+    <link rel="stylesheet" href="../options-css/my-bookings.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <section class="bookings-section">
+      <h2 class="page-title">📑 My Bookings</h2>
+      <div id="bookingsContainer" class="bookings-container">
+        <p class="loading">Loading your bookings...</p>
+      </div>
+    </section>
+
+    <div id="cancelModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <div class="modal-header">
+          <h3>Confirm Cancellation</h3>
+        </div>
+        <div class="modal-body">
+          <p>
+            Are you sure you want to cancel this booking? This action cannot be
+            undone.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button id="confirmCancelBtn" class="modal-confirm-btn">
+            Yes, Cancel
+          </button>
+          <button id="dismissModalBtn" class="modal-dismiss-btn">
+            No, Keep It
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        onValue,
+        remove,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCQneRn2fhr2MBPZ8FpGYQTHnSVXe-Y8oQ",
+        authDomain: "electrofix-website.firebaseapp.com",
+        projectId: "electrofix-website",
+        storageBucket: "electrofix-website.appspot.com",
+        messagingSenderId: "891241046906",
+        appId: "1:891241046906:web:382d83e91f521a357cacc3",
+        databaseURL:
+          "https://electrofix-website-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      const auth = getAuth(app);
+
+      const bookingsContainer = document.getElementById("bookingsContainer");
+      const cancelModal = document.getElementById("cancelModal");
+      const confirmCancelBtn = document.getElementById("confirmCancelBtn");
+      const dismissModalBtn = document.getElementById("dismissModalBtn");
+      const closeModalBtn = document.querySelector(".close-btn");
+
+      let currentBookingId = null;
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const uid = user.uid;
+          const bookingsRef = ref(db, `bookings/${uid}`);
+
+          onValue(bookingsRef, (snapshot) => {
+            bookingsContainer.innerHTML = "";
+            if (snapshot.exists()) {
+              const bookings = snapshot.val();
+
+              for (const bookingId in bookings) {
+                const booking = bookings[bookingId];
+                const card = document.createElement("div");
+                card.className = "booking-card";
+
+                const bookingDateTime = new Date(
+                  booking.bookingDate
+                ).toLocaleString("en-IN", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                });
+
+                const greetingText = `Hey ${booking.customerName}, check your booking!`;
+
+                card.innerHTML = `
+                  <div class="booking-info">
+                    <div class="greeting">${greetingText}</div>
+                    <p><strong>Service:</strong> ${booking.deviceType}</p>
+                    <p><strong>Booked on:</strong> ${bookingDateTime}</p>
+                    <p class="status">Status: ${booking.status}</p>
+                  </div>
+                  <div class="booking-actions">
+                    <button class="track-btn" onclick="trackBooking('${bookingId}')">
+                      Track
+                    </button>
+                    <button class="cancel-btn" data-booking-id="${bookingId}">
+                      Cancel
+                    </button>
+                  </div>
+                `;
+                bookingsContainer.appendChild(card);
+              }
+
+              document.querySelectorAll(".cancel-btn").forEach((button) => {
+                button.addEventListener("click", (event) => {
+                  currentBookingId = event.target.dataset.bookingId;
+                  cancelModal.style.display = "block";
+                });
+              });
+            } else {
+              // Display image when no bookings are found
+              bookingsContainer.innerHTML = `
+                <div class="no-bookings-placeholder">
+                  <img src="../images/no-bookings-found.jpg" alt="No bookings found" />
+                </div>
+              `;
+            }
+          });
+        } else {
+          bookingsContainer.innerHTML =
+            "<p class='loading'>Please log in to view your bookings.</p>";
+        }
+      });
+
+      // Track function -> নতুন পেজে নিয়ে যাবে
+      window.trackBooking = function (bookingId) {
+        window.location.href = `tracking.html?bookingId=${bookingId}`;
+      };
+
+      // Modal button event listeners
+      confirmCancelBtn.addEventListener("click", () => {
+        const user = auth.currentUser;
+        if (user && currentBookingId) {
+          const bookingRef = ref(
+            db,
+            `bookings/${user.uid}/${currentBookingId}`
+          );
+          remove(bookingRef)
+            .then(() => {
+              alert("Booking canceled successfully!");
+              cancelModal.style.display = "none";
+            })
+            .catch((error) => {
+              console.error("Error canceling booking:", error);
+              alert("Failed to cancel booking. Please try again.");
+              cancelModal.style.display = "none";
+            });
+        }
+      });
+
+      dismissModalBtn.addEventListener("click", () => {
+        cancelModal.style.display = "none";
+      });
+
+      closeModalBtn.addEventListener("click", () => {
+        cancelModal.style.display = "none";
+      });
+
+      window.addEventListener("click", (event) => {
+        if (event.target === cancelModal) {
+          cancelModal.style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>

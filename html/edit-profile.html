@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Profile - ElectroFix</title>
+    <link rel="stylesheet" href="../css/edit-profile.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+  </head>
+  <body>
+    <section class="profile-container">
+      <div class="profile-card edit-card">
+        <h2 class="form-title">Edit Your Profile</h2>
+        <form id="editProfileForm">
+          <div class="profile-pic-container">
+            <img
+              src="../images/profile-pic.jpg"
+              alt="Profile Picture"
+              id="profileImage"
+              class="profile-pic-edit"
+            />
+
+            <div class="overlay">
+              <label for="imageUpload" class="upload-btn">
+                <i class="fas fa-camera"></i> Change Photo
+              </label>
+            </div>
+
+            <input
+              type="file"
+              id="imageUpload"
+              accept="image/*"
+              style="display: none"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="editName">Name:</label>
+            <input
+              type="text"
+              id="editName"
+              placeholder="Enter your name"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="editPhone">Phone Number:</label>
+            <input
+              type="tel"
+              id="editPhone"
+              placeholder="Enter your phone number"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="editAddress">Address:</label>
+            <textarea
+              id="editAddress"
+              rows="3"
+              placeholder="Enter your address"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="editPostalCode">Postal Code:</label>
+            <input
+              type="text"
+              id="editPostalCode"
+              placeholder="Enter your postal code"
+            />
+          </div>
+
+          <button type="submit" class="btn save-btn">Save Changes</button>
+        </form>
+      </div>
+    </section>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+      import {
+        getDatabase,
+        ref as dbRef,
+        update,
+        get,
+        child,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+      import {
+        getStorage,
+        ref as storageRef,
+        uploadBytes,
+        getDownloadURL,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
+
+      // 🔹 Firebase Config
+      const firebaseConfig = {
+        apiKey: "AIzaSyCQneRn2fhr2MBPZ8FpGYQTHnSVXe-Y8oQ",
+        authDomain: "electrofix-website.firebaseapp.com",
+        projectId: "electrofix-website",
+        storageBucket: "electrofix-website.appspot.com",
+        messagingSenderId: "891241046906",
+        appId: "1:891241046906:web:382d83e91f521a357cacc3",
+        databaseURL:
+          "https://electrofix-website-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      };
+
+      // 🔹 Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getDatabase(app);
+      const storage = getStorage(app);
+
+      // DOM elements
+      const editProfileForm = document.getElementById("editProfileForm");
+      const editNameInput = document.getElementById("editName");
+      const editPhoneInput = document.getElementById("editPhone");
+      const editAddressInput = document.getElementById("editAddress");
+      const editPostalCodeInput = document.getElementById("editPostalCode"); // Added new DOM element
+      const profileImage = document.getElementById("profileImage");
+      const imageUpload = document.getElementById("imageUpload");
+
+      let currentUserId = null;
+
+      // 🔹 Auth state and data fetching
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          currentUserId = user.uid;
+          const databaseRef = dbRef(db);
+
+          try {
+            const snapshot = await get(
+              child(databaseRef, `users/${currentUserId}`)
+            );
+            if (snapshot.exists()) {
+              const userData = snapshot.val();
+              // ✅ Corrected keys from 'username' and 'phone' to 'fullName' and 'phoneNumber'
+              editNameInput.value = userData.fullName || "";
+              editPhoneInput.value = userData.phoneNumber || "";
+              editAddressInput.value = userData.address || "";
+              editPostalCodeInput.value = userData.postalCode || ""; // ✅ Fetch and set postal code
+              profileImage.src =
+                userData.profileImageUrl || "../images/profile-pic.jpg";
+            } else {
+              console.log("No user data found in database!");
+            }
+          } catch (error) {
+            console.error("Error fetching profile data:", error);
+          }
+        } else {
+          window.location.href = "login.html";
+        }
+      });
+
+      // 🔹 Image preview on change
+      imageUpload.addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            profileImage.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // 🔹 Form submission handler
+      editProfileForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (!currentUserId) {
+          alert("User not authenticated.");
+          return;
+        }
+
+        const file = imageUpload.files[0];
+        let imageUrl = null;
+
+        try {
+          if (file) {
+            const imageRef = storageRef(
+              storage,
+              `profile_images/${currentUserId}`
+            );
+            // 1. Upload the image to Firebase Storage
+            await uploadBytes(imageRef, file);
+            // 2. Get the public download URL
+            imageUrl = await getDownloadURL(imageRef);
+          }
+
+          // ✅ Corrected data keys to match Firebase Realtime Database
+          const updatedData = {
+            fullName: editNameInput.value,
+            phoneNumber: editPhoneInput.value,
+            address: editAddressInput.value,
+            postalCode: editPostalCodeInput.value, // ✅ Added postal code to the update object
+          };
+
+          if (imageUrl) {
+            updatedData.profileImageUrl = imageUrl;
+          }
+
+          // 3. Update the user's data in the Realtime Database
+          const userDbRef = dbRef(db, `users/${currentUserId}`);
+          await update(userDbRef, updatedData);
+
+          alert("Profile updated successfully! ✅");
+          window.location.href = "profile.html"; // Redirect back to profile page
+        } catch (error) {
+          console.error("Error updating profile:", error);
+          alert("Failed to update profile. Please try again.");
+        }
+      });
+    </script>
+  </body>
+</html>

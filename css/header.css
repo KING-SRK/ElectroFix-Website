@@ -1,0 +1,236 @@
+/* 🌐 Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Header Section --- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 5rem;
+  padding: 0 5%;
+  background: rgba(36, 37, 42, 0.6);
+  backdrop-filter: blur(8px);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.logo img {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* --- Navigation Links & Buttons (Desktop First) --- */
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  transition: transform 0.4s ease-in-out;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: #ffd700;
+  border-bottom: 2px solid #ffd700;
+  padding-bottom: 5px;
+}
+
+/* Auth Buttons */
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.auth-buttons a {
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+  text-decoration: none;
+}
+
+.login-btn {
+  background: transparent;
+  color: #ffd700;
+  border: 2px solid #ffd700;
+}
+
+.login-btn:hover {
+  background: #ffd700;
+  color: #24252a;
+}
+
+.signup-btn {
+  background: linear-gradient(45deg, #ffd700, #ffb700);
+  border: 2px solid #ffd700;
+  color: #24252a;
+}
+
+.signup-btn:hover {
+  background: linear-gradient(45deg, #00f2ff, #00cfff);
+  border-color: #00cfff;
+  color: #fff;
+}
+
+/* --- Hamburger Menu Icon --- */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 22px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.menu-toggle span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background: #ffd700;
+  border-radius: 2px;
+  transition: 0.4s;
+  transform-origin: left center;
+}
+
+.menu-toggle.active span:nth-child(1) {
+  transform: rotate(45deg);
+}
+
+.menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg);
+}
+
+  @media
+  (max-width: 768px) {
+  .header {
+    height: 4.5rem;
+    padding: 0 5%;
+  }
+
+  .logo img {
+    height: 45px;
+  }
+
+  /* Show hamburger menu and hide the desktop menu */
+  .menu-toggle {
+    display: flex;
+  }
+
+  .nav {
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 70%;
+    gap: 20px;
+    overflow: hidden;
+    background: rgba(36, 37, 42, 0.95);
+    padding: 6rem 0 0;
+    transform: translateX(-100%);
+    transition: transform 0.4s ease-in-out;
+    z-index: 999;
+  }
+
+  .nav.active {
+    transform: translateX(0);
+  }
+
+  /* Separate mobile styling for nav links */
+  .nav-links {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .nav-links a {
+    font-size: 1.2rem;
+    padding: 10px;
+    border-bottom: none;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Mobile-specific hover for nav links */
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: #ff9800;
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom: none;
+  }
+
+  /* Separate mobile styling for auth buttons */
+  .auth-buttons {
+    flex-direction: column;
+    margin-top: 20px;
+    margin-left: 0;
+  }
+
+  .auth-buttons a {
+    width: 100%;
+    max-width: 250px;
+    text-align: center;
+  }
+
+  /* Mobile-specific hover for auth buttons */
+  .login-btn:hover {
+    background: #ffd700;
+    color: #24252a;
+  }
+
+  .signup-btn:hover {
+    background: linear-gradient(45deg, #00f2ff, #00cfff);
+    border-color: #00cfff;
+    color: #fff;
+  }
+}
+
+/* 📱 Small Mobile (<=400px) */
+@media (max-width: 400px) {
+  .header {
+    height: 4rem;
+    padding: 0 5%;
+  }
+
+  .logo img {
+    height: 40px;
+  }
+
+  .nav {
+    width: 80%;
+  }
+}

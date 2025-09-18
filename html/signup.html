@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="../css/signup.css" />
+    <link rel="stylesheet" href="../css/validation.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="loader-container">
+      <div class="loader-content">
+        <i class="fas fa-spinner fa-spin loader-icon"></i>
+        <p class="loader-text">Processing...</p>
+      </div>
+    </div>
+
+    <div class="signup-container">
+      <div class="signup-card">
+        <div class="card-header">
+          <i class="fas fa-user-plus"></i>
+          <h2>Create Your Account</h2>
+          <p>Sign up to get started with our services.</p>
+        </div>
+        <form class="signup-form">
+          <div class="input-group">
+            <label for="fullName">Full Name</label>
+            <input
+              type="text"
+              id="fullName"
+              placeholder="Enter your full name"
+              required
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="phoneNumber">Phone Number</label>
+            <input
+              type="tel"
+              id="phoneNumber"
+              placeholder="Enter your phone number (e.g., 9876543210)"
+              required
+            />
+            <span class="error-message" id="phone-error"></span>
+          </div>
+
+          <div class="input-group">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+              required
+            />
+            <span class="error-message" id="email-error"></span>
+          </div>
+
+          <div class="input-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Create a strong password"
+              required
+            />
+            <span class="error-message" id="password-error"></span>
+          </div>
+
+          <div class="input-group">
+            <label for="address">Address</label>
+            <div class="address-group">
+              <input
+                type="text"
+                id="address"
+                placeholder="Enter your address"
+                required
+              />
+              <button
+                type="button"
+                class="fill-address-btn"
+                onclick="fillAddress()"
+              >
+                Use My Location
+              </button>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="postalCode">PIN Code</label>
+            <input
+              type="text"
+              id="postalCode"
+              placeholder="Enter your pin code"
+              required
+            />
+          </div>
+
+          <button type="submit" class="signup-btn">Sign Up</button>
+        </form>
+        <div class="login-link">
+          Already have an account? <a href="login.html">Log In</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-backdrop"></div>
+    <div class="success-modal">
+      <div class="modal-content">
+        <i class="fas fa-check-circle success-icon"></i>
+        <h3>Signup Successful!</h3>
+        <p>Your account has been created successfully. Redirecting...</p>
+      </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        set,
+        update,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+      // 🔹 Firebase Config
+      const firebaseConfig = {
+        apiKey: "AIzaSyCQneRn2fhr2MBPZ8FpGYQTHnSVXe-Y8oQ",
+        authDomain: "electrofix-website.firebaseapp.com",
+        projectId: "electrofix-website",
+        storageBucket: "electrofix-website.appspot.com",
+        messagingSenderId: "891241046906",
+        appId: "1:891241046906:web:382d83e91f521a357cacc3",
+        measurementId: "G-MCWKF1FNE1",
+      };
+
+      // 🔹 Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      // Database with explicit URL
+      const database = getDatabase(
+        app,
+        "https://electrofix-website-default-rtdb.asia-southeast1.firebasedatabase.app/"
+      );
+
+      // 🔹 Get modal and loader elements
+      const modalBackdrop = document.querySelector(".modal-backdrop");
+      const successModal = document.querySelector(".success-modal");
+      const loaderContainer = document.querySelector(".loader-container");
+
+      function showLoader(message = "Processing...") {
+        document.querySelector(".loader-text").innerText = message;
+        loaderContainer.style.display = "flex";
+      }
+
+      function hideLoader() {
+        loaderContainer.style.display = "none";
+      }
+
+      function showSuccessPopup() {
+        modalBackdrop.style.display = "block";
+        successModal.style.display = "block";
+      }
+
+      // 🔹 Validation Functions
+      const showError = (element, message) => {
+        const parent = element.parentElement;
+        parent.classList.add("invalid");
+        const errorSpan = parent.querySelector(".error-message");
+        if (errorSpan) {
+          errorSpan.textContent = message;
+          errorSpan.style.display = "block";
+        }
+      };
+
+      const clearError = (element) => {
+        const parent = element.parentElement;
+        parent.classList.remove("invalid");
+        const errorSpan = parent.querySelector(".error-message");
+        if (errorSpan) {
+          errorSpan.textContent = "";
+          errorSpan.style.display = "none";
+        }
+      };
+
+      const validatePhone = (phone) => {
+        const phoneRegex = /^[6789]\d{9}$/;
+        if (!phoneRegex.test(phone)) {
+          showError(
+            document.getElementById("phoneNumber"),
+            "Phone number must be 10 digits and start with 6, 7, 8, or 9."
+          );
+          return false;
+        }
+        clearError(document.getElementById("phoneNumber"));
+        return true;
+      };
+
+      const validateEmail = (email) => {
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (!emailRegex.test(email)) {
+          showError(
+            document.getElementById("email"),
+            "Please enter a valid email address."
+          );
+          return false;
+        }
+        clearError(document.getElementById("email"));
+        return true;
+      };
+
+      const validatePassword = (password) => {
+        const errors = [];
+        if (password.length < 8) {
+          errors.push("at least 8 characters long");
+        }
+        if (!/[A-Z]/.test(password)) {
+          errors.push("at least one uppercase letter (A-Z)");
+        }
+        if (!/[a-z]/.test(password)) {
+          errors.push("at least one lowercase letter (a-z)");
+        }
+        if (!/[0-9]/.test(password)) {
+          errors.push("at least one number (0-9)");
+        }
+        if (!/[!@#$%&*?]/.test(password)) {
+          errors.push("at least one special character (!, @, #, $, etc.)");
+        }
+
+        if (errors.length > 0) {
+          showError(
+            document.getElementById("password"),
+            `Password must contain: ${errors.join(", ")}.`
+          );
+          return false;
+        }
+        clearError(document.getElementById("password"));
+        return true;
+      };
+
+      // 🔹 Get input fields
+      const phoneNumberInput = document.getElementById("phoneNumber");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+
+      // 🔹 Add real-time validation listeners
+      phoneNumberInput.addEventListener("keyup", (e) =>
+        validatePhone(e.target.value)
+      );
+      emailInput.addEventListener("keyup", (e) =>
+        validateEmail(e.target.value)
+      );
+      passwordInput.addEventListener("keyup", (e) =>
+        validatePassword(e.target.value)
+      );
+
+      // Also validate when a user clicks away from the field
+      phoneNumberInput.addEventListener("blur", (e) =>
+        validatePhone(e.target.value)
+      );
+      emailInput.addEventListener("blur", (e) => validateEmail(e.target.value));
+      passwordInput.addEventListener("blur", (e) =>
+        validatePassword(e.target.value)
+      );
+
+      // 🔹 Form submit
+      const form = document.querySelector(".signup-form");
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // 🔹 Get all form values
+        const fullName = document.getElementById("fullName").value.trim();
+        const phoneNumber = phoneNumberInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        const address = document.getElementById("address").value.trim();
+        const postalCode = document.getElementById("postalCode").value.trim();
+
+        // 🔹 Run all validations before proceeding
+        const isPhoneValid = validatePhone(phoneNumber);
+        const isEmailValid = validateEmail(email);
+        const isPasswordValid = validatePassword(password);
+
+        // If any validation fails, stop the process
+        if (!isPhoneValid || !isEmailValid || !isPasswordValid) {
+          return;
+        }
+
+        // 🔹 Final check for all fields
+        if (
+          !fullName ||
+          !phoneNumber ||
+          !email ||
+          !password ||
+          !address ||
+          !postalCode
+        ) {
+          alert("Please fill all fields!");
+          return;
+        }
+
+        showLoader("Creating your account...");
+
+        try {
+          // 🔹 Create user with email and password
+          const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+          const user = userCredential.user;
+
+          console.log("User UID:", user.uid);
+
+          // 🔹 Save all user info in Realtime Database
+          await set(ref(database, "users/" + user.uid), {
+            fullName,
+            phoneNumber,
+            email,
+            address,
+            postalCode,
+            location: {
+              latitude: window.userLat || null,
+              longitude: window.userLon || null,
+            },
+            createdAt: new Date().toISOString(),
+          });
+
+          hideLoader();
+          showSuccessPopup();
+
+          setTimeout(() => {
+            form.reset();
+            window.location.href = "../index.html";
+          }, 3000);
+        } catch (error) {
+          hideLoader();
+          console.error("Firebase Operation Failed:", error);
+
+          let errorMessage = "An unknown error occurred. Please try again.";
+          switch (error.code) {
+            case "auth/email-already-in-use":
+              errorMessage =
+                "This email is already registered. Please log in or use a different email.";
+              break;
+            case "auth/invalid-email":
+              errorMessage = "The email address is not valid.";
+              break;
+            case "auth/weak-password":
+              errorMessage =
+                "The password is too weak. Please use at least 6 characters.";
+              break;
+            case "permission-denied":
+              errorMessage =
+                "Database write permission denied. Check your database rules.";
+              break;
+            default:
+              errorMessage = error.message;
+              break;
+          }
+          alert("Error: " + errorMessage);
+        }
+      });
+
+      // 🔹 Address autofill + realtime save
+      window.fillAddress = function () {
+        if (!navigator.geolocation) {
+          alert("Geolocation is not supported by your browser.");
+          return;
+        }
+
+        showLoader("Fetching your location...");
+
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            // 🔹 save globally
+            window.userLat = lat;
+            window.userLon = lon;
+
+            try {
+              const res = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+              );
+              const data = await res.json();
+              const address = data.display_name || `${lat}, ${lon}`;
+              const postalCode = data.address.postcode || "";
+
+              // input field এ বসাও
+              document.getElementById("address").value = address;
+              document.getElementById("postalCode").value = postalCode;
+
+              // 🔹 যদি ইতিমধ্যে ইউজার লগইন করা থাকে তবে সাথে সাথে DB তে সেভ করো
+              const currentUser = auth.currentUser;
+              if (currentUser) {
+                await update(ref(database, "users/" + currentUser.uid), {
+                  address: address,
+                  postalCode: postalCode,
+                  location: {
+                    latitude: lat,
+                    longitude: lon,
+                  },
+                  updatedAt: new Date().toISOString(),
+                });
+                console.log("📍 Location and postal code saved in database ✅");
+              }
+            } catch {
+              document.getElementById("address").value = `${lat}, ${lon}`;
+            } finally {
+              hideLoader();
+            }
+          },
+          () => {
+            hideLoader();
+            alert("Unable to fetch location. Please allow location access.");
+          }
+        );
+      };
+    </script>
+  </body>
+</html>

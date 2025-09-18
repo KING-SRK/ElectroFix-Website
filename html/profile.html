@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile - ElectroFix</title>
+    <link rel="stylesheet" href="../css/profile.css" />
+    <link rel="stylesheet" href="../css/header.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo"><img src="../images/logo.png" alt="" /></div>
+      <nav class="nav" id="main-nav">
+        <div class="nav-links">
+          <a href="../index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="services.html">Services</a>
+          <a href="profile.html" class="active">Profile</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="auth-buttons">
+          <a href="login.html" class="login-btn">Login</a>
+          <a href="signup.html" class="signup-btn">Signup</a>
+        </div>
+      </nav>
+      <div class="menu-toggle" id="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </header>
+
+    <section class="profile-container">
+      <div class="profile-card">
+        <div class="profile-left">
+          <img
+            src="../images/profile-pic.jpg"
+            alt="Profile Picture"
+            class="profile-pic"
+          />
+          <h2 class="profile-name" id="profileName">Loading...</h2>
+          <p class="profile-email" id="profileEmail">Loading...</p>
+        </div>
+
+        <div class="profile-right">
+          <div class="profile-body">
+            <div class="profile-info">
+              <div class="info-item">
+                <i class="fas fa-phone-alt"></i>
+                <p>Phone: <span id="profilePhone">N/A</span></p>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <p>Address: <span id="profileAddress">Loading...</span></p>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-map-pin"></i>
+                <p>Postal Code: <span id="profilePostalCode">N/A</span></p>
+              </div>
+              <div class="info-item">
+                <i class="fas fa-calendar-alt"></i>
+                <p>Member Since: <span id="profileJoined">Loading...</span></p>
+              </div>
+            </div>
+            <a href="edit-profile.html" class="btn edit-btn">Edit Profile</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script type="module">
+      // 🔹 Firebase import (already present)
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+        child,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+      // 🔹 Firebase Config (already present)
+      const firebaseConfig = {
+        apiKey: "AIzaSyCQneRn2fhr2MBPZ8FpGYQTHnSVXe-Y8oQ",
+        authDomain: "electrofix-website.firebaseapp.com",
+        projectId: "electrofix-website",
+        storageBucket: "electrofix-website.appspot.com",
+        messagingSenderId: "891241046906",
+        appId: "1:891241046906:web:382d83e91f521a357cacc3",
+        databaseURL:
+          "https://electrofix-website-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      };
+
+      // 🔹 Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getDatabase(app);
+
+      // 🔹 Auth state change listener
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const uid = user.uid;
+          const dbRef = ref(db);
+
+          try {
+            const snapshot = await get(child(dbRef, `users/${uid}`));
+            if (snapshot.exists()) {
+              const userData = snapshot.val();
+
+              // UI তে বসানো
+              document.getElementById("profileName").innerText =
+                userData.fullName || "Unknown User";
+              document.getElementById("profileEmail").innerText =
+                userData.email || "No Email";
+
+              // 🔹 Updated data formatting for better presentation
+              // Phone Number
+              document.getElementById("profilePhone").innerText =
+                userData.phoneNumber
+                  ? `+91 ${userData.phoneNumber}`
+                  : "Not Provided";
+              // Address
+              document.getElementById("profileAddress").innerText =
+                userData.address || "No Address";
+              // Postal Code
+              document.getElementById("profilePostalCode").innerText =
+                userData.postalCode || "N/A";
+              // Joined Date
+              document.getElementById("profileJoined").innerText =
+                userData.createdAt
+                  ? new Date(userData.createdAt).toLocaleDateString()
+                  : "Date unavailable";
+
+              // 🔹 Set profile picture from Firebase URL
+              const profilePic = document.querySelector(".profile-pic");
+              if (userData.profileImageUrl) {
+                profilePic.src = userData.profileImageUrl;
+              } else {
+                // Fallback to default image if no URL is found
+                profilePic.src = "../images/profile-pic.jpg";
+              }
+            } else {
+              alert("No user data found in database!");
+            }
+          } catch (error) {
+            console.error("Error loading profile:", error);
+            alert("Failed to load profile data.");
+          }
+        } else {
+          window.location.href = "login.html";
+        }
+      });
+    </script>
+
+    <script src="../js/script.js"></script>
+  </body>
+</html>

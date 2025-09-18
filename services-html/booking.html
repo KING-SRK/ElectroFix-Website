@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book a Repair - ElectroFix</title>
+    <link rel="stylesheet" href="../services-css/booking.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"
+    ></script>
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"
+    ></script>
+  </head>
+  <body>
+    <section class="booking-section">
+      <div class="booking-container">
+        <div class="booking-card">
+          <div class="booking-image-container">
+            <img
+              src="../images/booking.jpg"
+              alt="Technician working on a circuit board."
+              class="booking-image"
+            />
+          </div>
+          <div class="booking-form-container">
+            <h2 class="form-title">Fix Your Device Now!</h2>
+            <p class="form-subtitle">
+              Hey! Please check, before submitting everything is looks correct!
+            </p>
+
+            <div class="selected-service-card">
+              <p id="selectedCategoryText">Loading...</p>
+
+              <p id="selectedServiceText">Loading...</p>
+            </div>
+
+            <form id="bookingForm">
+              <div class="form-group">
+                <label for="customerName">Your Full Name</label>
+                <input
+                  type="text"
+                  id="customerName"
+                  name="customerName"
+                  placeholder="Enter your name"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="customerPhone">Phone Number</label>
+                <input
+                  type="tel"
+                  id="customerPhone"
+                  name="customerPhone"
+                  placeholder="Enter your phone number"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="customerAddress">Address</label>
+                <div class="address-input-group">
+                  <input
+                    type="text"
+                    id="customerAddress"
+                    name="customerAddress"
+                    placeholder="Enter your address"
+                    required
+                  />
+                  <button
+                    type="button"
+                    class="btn auto-detect-btn"
+                    id="autoDetectBtn"
+                  >
+                    Auto-Detect Location 📍
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="customerPincode">Pincode</label>
+                <input
+                  type="text"
+                  id="customerPincode"
+                  name="customerPincode"
+                  placeholder="Enter your area pincode"
+                  required
+                />
+              </div>
+
+              <input type="hidden" id="deviceType" name="deviceType" />
+
+              <div class="form-group">
+                <label for="problemDescription"
+                  >Problem Description (Optional)</label
+                >
+                <textarea
+                  id="problemDescription"
+                  name="problemDescription"
+                  rows="4"
+                  placeholder="Please describe the issue in detail"
+                ></textarea>
+              </div>
+
+              <button type="submit" class="btn submit-btn">Book Now</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+        child,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+      // 🔹 Firebase Config
+      const firebaseConfig = {
+        apiKey: "AIzaSyCQneRn2fhr2MBPZ8FpGYQTHnSVXe-Y8oQ",
+        authDomain: "electrofix-website.firebaseapp.com",
+        projectId: "electrofix-website",
+        storageBucket: "electrofix-website.appspot.com",
+        messagingSenderId: "891241046906",
+        appId: "1:891241046906:web:382d83e91f521a357cacc3",
+        databaseURL:
+          "https://electrofix-website-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getDatabase(app);
+
+      // 🔹 Map for service categories
+      const categoryMap = {
+        // AC Services
+        ac: {
+          displayName: "AC Repair & Services",
+          services: {
+            general: "General Services",
+            installation: "Installation & Uninstallation",
+            cooling: "Cooling / Performance Issues",
+            gas: "Gas & Refrigerant Works",
+            electrical: "Electrical & Wiring Repairs",
+            compressor: "Compressor Works",
+            "water-leakage": "Water Leakage Problems",
+            motor: "Fan & Motor Services",
+            noise: "Noise & Vibration Issues",
+            remote: "Remote & Sensor Issues",
+            "deep-cleaning": "Deep Cleaning Services",
+            specialized: "Specialized AC Services",
+            "value-added": "Value-Added Services",
+          },
+        },
+
+        // Washing Machine Services
+        "washing-machine": {
+          displayName: "Washing Machine Services",
+          services: {
+            general: "General Services",
+            installation: "Installation & Uninstallation",
+            washing: "Washing Issues",
+            "spin-dry": "Spin & Dry Problems",
+            water: "Water Supply & Drainage",
+            electrical: "Electrical & Control Issues",
+            motor: "Motor & Mechanical Repairs",
+            "door-body": "Door & Body Repairs",
+            specialized: "Specialized Works",
+            "value-added": "Value-Added Services",
+          },
+        },
+        // Adding alias for wm
+        wm: {
+          displayName: "Washing Machine Services",
+          services: {
+            general: "General Services",
+            installation: "Installation & Uninstallation",
+            washing: "Washing Issues",
+            "spin-dry": "Spin & Dry Problems",
+            water: "Water Supply & Drainage",
+            electrical: "Electrical & Control Issues",
+            motor: "Motor & Mechanical Repairs",
+            "door-body": "Door & Body Repairs",
+            specialized: "Specialized Works",
+            "value-added": "Value-Added Services",
+          },
+        },
+
+        // Sewing Machine Services
+        "sewing-machine": {
+          displayName: "Sewing Machine Services",
+          services: {
+            general: "General Services",
+            installation: "Installation & Setup",
+            stitching: "Stitching Issues",
+            mechanical: "Mechanical Repairs",
+            electrical: "Electrical Repairs (for Motorized Machines)",
+            specialized: "Specialized Services",
+            performance: "Performance Issues",
+            "spare-parts": "Spare Parts & Replacement",
+            "value-added": "Value-Added Services",
+          },
+        },
+
+        // Computer Services
+        computer: {
+          displayName: "Computer Services",
+          services: {
+            general: "General Services",
+            software: "Software Installation & Support",
+            virus: "Virus & Security",
+            hardware: "Hardware Repair & Replacement",
+            peripherals: "Peripheral & Accessory Services",
+            networking: "Networking Services",
+            data: "Data Services",
+            laptop: "Laptop-Specific Services",
+            upgrades: "Customization & Upgrades",
+            "it-support": "IT Support & Maintenance",
+          },
+        },
+      };
+
+      // 🔹 Load user and service details
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        const uid = user.uid;
+        const dbRef = ref(db);
+        const customerPhoneInput = document.getElementById("customerPhone");
+        const countryCode = "+91 ";
+
+        // Set initial value for phone number field
+        customerPhoneInput.value = countryCode;
+
+        // Prevent backspacing/deleting the country code
+        customerPhoneInput.addEventListener("keydown", (e) => {
+          const isAtStart =
+            customerPhoneInput.selectionStart <= countryCode.length;
+          const isAtEnd =
+            customerPhoneInput.selectionStart ===
+            customerPhoneInput.value.length;
+          const isBackspaceOrDelete =
+            e.key === "Backspace" || e.key === "Delete";
+
+          if (isBackspaceOrDelete && isAtStart) {
+            e.preventDefault();
+          }
+        });
+
+        // Ensure the country code is always present at the start
+        customerPhoneInput.addEventListener("input", () => {
+          if (!customerPhoneInput.value.startsWith(countryCode)) {
+            customerPhoneInput.value = countryCode;
+          }
+        });
+
+        try {
+          const snapshot = await get(child(dbRef, `users/${uid}`));
+          if (snapshot.exists()) {
+            const userData = snapshot.val();
+            console.log("✅ User data loaded:", userData);
+
+            // Fill form safely
+            document.getElementById("customerName").value =
+              userData.fullName ?? "";
+            document.getElementById("customerPhone").value =
+              (userData.phoneNumber
+                ? userData.phoneNumber.replace(/^\+91\s?/, "")
+                : "") ?? "";
+            customerPhoneInput.value = countryCode + customerPhoneInput.value;
+
+            document.getElementById("customerAddress").value =
+              userData.address ?? "";
+            document.getElementById("customerPincode").value =
+              userData.postalCode ?? "";
+          } else {
+            console.warn("⚠️ User profile not found in database!");
+          }
+        } catch (error) {
+          console.error("❌ Error loading profile:", error);
+        }
+
+        // 🔹 Read service details from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryKey = (urlParams.get("category") || "").toLowerCase();
+        const serviceKey = (urlParams.get("service") || "").toLowerCase();
+
+        console.log("👉 URL থেকে পাওয়া ক্যাটাগরি:", categoryKey);
+        console.log("👉 URL থেকে পাওয়া সার্ভিস:", serviceKey);
+
+        const categoryData = categoryMap[categoryKey];
+        let categoryText = "Unknown Device";
+        let serviceText = "Unknown Service";
+
+        if (categoryData) {
+          categoryText = categoryData.displayName;
+          serviceText = categoryData.services[serviceKey] || "Unknown Service";
+        }
+
+        // Show selected service on UI
+        const categoryTextEl = document.getElementById("selectedCategoryText");
+        const serviceTextEl = document.getElementById("selectedServiceText");
+
+        if (categoryTextEl) categoryTextEl.innerText = categoryText;
+        if (serviceTextEl) serviceTextEl.innerText = serviceText;
+
+        // Hidden input for form submission
+        const deviceTypeInput = document.getElementById("deviceType");
+        if (deviceTypeInput)
+          deviceTypeInput.value = `${categoryText} > ${serviceText}`;
+      });
+    </script>
+
+    <script type="module" src="../js/booking.js"></script>
+  </body>
+</html>

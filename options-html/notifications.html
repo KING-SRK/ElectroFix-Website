@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifications - ElectroFix</title>
+    <link rel="stylesheet" href="../options-css/notifications.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <section class="notifications-section">
+      <h2 class="page-title">🔔 Notifications</h2>
+      <div id="notificationsContainer" class="notifications-container">
+        <p class="loading">Loading your notifications...</p>
+      </div>
+    </section>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+      // Your Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCQneRn2fhr2MBPZ8FpGYQTHnSVXe-Y8oQ",
+        authDomain: "electrofix-website.firebaseapp.com",
+        projectId: "electrofix-website",
+        storageBucket: "electrofix-website.appspot.com",
+        messagingSenderId: "891241046906",
+        appId: "1:891241046906:web:382d83e91f521a357cacc3",
+        databaseURL:
+          "https://electrofix-website-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      const auth = getAuth(app);
+
+      const notificationsContainer = document.getElementById(
+        "notificationsContainer"
+      );
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const uid = user.uid;
+          const notificationsRef = ref(db, `notifications/${uid}`);
+
+          onValue(notificationsRef, (snapshot) => {
+            notificationsContainer.innerHTML = "";
+            if (snapshot.exists()) {
+              const notifications = snapshot.val();
+              const notificationList = document.createElement("ul");
+              notificationList.className = "notification-list";
+
+              // Display notifications in reverse chronological order
+              const notificationKeys = Object.keys(notifications).reverse();
+              for (const notificationId of notificationKeys) {
+                const notification = notifications[notificationId];
+                const listItem = document.createElement("li");
+                listItem.className = `notification-card ${notification.read ? "read" : ""}`;
+                listItem.innerHTML = `
+                  <div class="notification-icon">
+                    <i class="fas fa-bell"></i>
+                  </div>
+                  <div class="notification-content">
+                    <p class="notification-title">${notification.title}</p>
+                    <p class="notification-body">${notification.body}</p>
+                    <span class="notification-date">${new Date(notification.timestamp).toLocaleString()}</span>
+                  </div>
+                `;
+                notificationList.appendChild(listItem);
+              }
+              notificationsContainer.appendChild(notificationList);
+            } else {
+              // Display image when no notifications are found
+              notificationsContainer.innerHTML = `
+                <div class="no-notifications-placeholder">
+                  <img src="../images/no-notifications.jpg" alt="No notifications" />
+                </div>
+              `;
+            }
+          });
+        } else {
+          notificationsContainer.innerHTML =
+            "<p class='loading'>Please log in to view your notifications.</p>";
+        }
+      });
+    </script>
+  </body>
+</html>
