@@ -6,6 +6,11 @@
     <title>ElectroFix</title>
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/header.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
   </head>
   <body>
     <header class="header">
@@ -35,13 +40,16 @@
       <div class="hero-text">
         <h2>Welcome to <span>ElectroFix</span></h2>
         <h4>Fast, Reliable & Affordable Electronics Repair</h4>
-        <p>Expert technicians, genuine parts — get your device fixed today with a 90-day warranty.</p>
+        <p>
+          Expert technicians, genuine parts — get your device fixed today with a
+          90-day warranty.
+        </p>
         <a href="html/services.html" class="btn">Get Started</a>
       </div>
     </section>
 
     <section class="features">
-      <div class="feature-card">
+      <div class="feature-card" data-url="options-html/my-bookings.html">
         <div class="icon">
           <i class="fa-solid fa-calendar-check"></i>
         </div>
@@ -55,19 +63,25 @@
         <small class="microcopy">Missed updates may delay your service.</small>
       </div>
 
-      <div class="feature-card">
+      <div class="feature-card" data-url="options-html/payment-history.html">
         <div class="icon">
-          <i class="fas fa-credit-card"></i>
+          <i class="fas fa-receipt"></i>
         </div>
-        <h3>Payment</h3>
-        <p>Pay safely with 100% secure gateway — no hidden fees, ever.</p>
-        <button class="feature-btn">Pay Now</button>
-        <small class="microcopy"
-          >Encrypted & protected — just like your bank.</small
+        <h3>Payment History</h3>
+        <p>Check all your past transactions & payment records securely.</p>
+        <a
+          href="options-html/payment-history.html"
+          class="feature-btn"
+          data-url="options-html/payment-history.html"
         >
+          View History
+        </a>
+        <small class="microcopy">
+          Track payments anytime — transparent & safe.
+        </small>
       </div>
 
-      <div class="feature-card">
+      <div class="feature-card" data-url="options-html/notifications.html">
         <div class="icon">
           <i class="fas fa-bell"></i>
         </div>
@@ -81,13 +95,15 @@
         >
       </div>
 
-      <div class="feature-card">
+      <div class="feature-card" data-url="options-html/help.html">
         <div class="icon">
           <i class="fas fa-question-circle"></i>
         </div>
         <h3>Help</h3>
         <p>We’re here 24/7 — friendly support whenever you need us.</p>
-        <button class="feature-btn">Get Instant Help</button>
+        <button class="feature-btn" data-url="options-html/help.html">
+          Get Instant Help
+        </button>
         <small class="microcopy">Most issues solved within minutes.</small>
       </div>
     </section>

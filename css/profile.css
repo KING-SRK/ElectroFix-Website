@@ -104,14 +104,14 @@ body::after {
   font-size: 1rem;
   font-weight: 600;
   border-radius: 8px;
-  background: linear-gradient(45deg, #ffd700, #ffb700);
+  background: linear-gradient(45deg, #fff95b, #ff930f);
   color: #24252a;
   text-decoration: none;
   transition: 0.3s ease;
 }
 
 .edit-btn:hover {
-  background: linear-gradient(45deg, #ffb700, #ffd700);
+  background: linear-gradient(45deg, #ff930f, #fff95b);
   transform: scale(1.05);
 }
 

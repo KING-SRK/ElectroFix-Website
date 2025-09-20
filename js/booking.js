@@ -84,7 +84,6 @@ autoDetectBtn.addEventListener("click", () => {
 
             customerAddressInput.value = fullAddress;
             customerPincodeInput.value = address.postcode || "";
-            // ✅ এখানে অটো-রি-সাইজ ফাংশন কল করা হচ্ছে
             autoResizeTextarea(customerAddressInput);
           } else {
             customerAddressInput.value = "Could not find a detailed address.";
@@ -128,25 +127,13 @@ onAuthStateChanged(auth, async (user) => {
 
         // Fill form safely
         document.getElementById("customerName").value = userData.fullName ?? "";
-        document.getElementById("customerPhone").value =
-          (userData.phoneNumber
-            ? userData.phoneNumber.replace(/^\+91\s?/, "")
-            : "") ?? "";
-
-        // Ensure country code is added to the phone number field
         const customerPhoneInput = document.getElementById("customerPhone");
         const countryCode = "+91 ";
-        if (!customerPhoneInput.value.startsWith(countryCode)) {
-          customerPhoneInput.value = countryCode + customerPhoneInput.value;
-        }
-
-        // Fill other fields if available
-        document.getElementById("customerAddress").value =
-          userData.address ?? "";
-        document.getElementById("customerPincode").value =
-          userData.postalCode ?? "";
-
-        // ✅ এখানেও অটো-রি-সাইজ ফাংশন কল করা হচ্ছে যাতে ডেটা লোড হওয়ার সাথে সাথে সাইজ ঠিক হয়ে যায়
+        const phoneWithoutCode = (userData.phoneNumber ? userData.phoneNumber.replace(/^\+91\s?/, "") : "");
+        customerPhoneInput.value = countryCode + phoneWithoutCode;
+        
+        document.getElementById("customerAddress").value = userData.address ?? "";
+        document.getElementById("customerPincode").value = userData.postalCode ?? "";
         autoResizeTextarea(customerAddressInput);
       } else {
         console.warn("⚠️ User profile not found in database!");
@@ -163,6 +150,20 @@ onAuthStateChanged(auth, async (user) => {
       submitBtn.disabled = true;
       submitBtn.style.cursor = "not-allowed";
 
+      const selectedPaymentOption = document.querySelector(
+        'input[name="paymentOption"]:checked'
+      )?.value;
+
+      // যদি কোনো পেমেন্ট অপশন নির্বাচন করা না হয়, তাহলে একটি সতর্কতা দেখাও
+      if (!selectedPaymentOption) {
+        alert("Please select a payment method.");
+        submitBtn.innerText = "Book Now";
+        submitBtn.disabled = false;
+        submitBtn.style.cursor = "pointer";
+        return;
+      }
+
+      // Check if location is available, if not, try to get it
       if (!userLatitude || !userLongitude) {
         if (navigator.geolocation) {
           try {
@@ -184,31 +185,41 @@ onAuthStateChanged(auth, async (user) => {
         customerPincode: document.getElementById("customerPincode").value,
         deviceType: document.getElementById("deviceType").value,
         problemDescription: document.getElementById("problemDescription").value,
+        paymentMethod: selectedPaymentOption, // পেমেন্ট অপশন যোগ করা হয়েছে
         latitude: userLatitude || null,
         longitude: userLongitude || null,
         bookingDate: new Date().toISOString(),
         status: "Pending",
       };
 
-      const bookingsRef = ref(db, `bookings/${uid}`);
-      const newBookingRef = push(bookingsRef);
+      // Handle payment option logic
+      if (selectedPaymentOption === "after-service") {
+        const bookingsRef = ref(db, `bookings/${uid}`);
+        const newBookingRef = push(bookingsRef);
 
-      try {
-        await set(newBookingRef, newBooking);
-        console.log("✅ Booking successful!");
-        showSuccessPopup();
-      } catch (error) {
-        console.error("❌ Error submitting booking:", error);
-        alert("There was an error booking your service. Please try again.");
+        try {
+          await set(newBookingRef, newBooking);
+          console.log("✅ Booking successful!");
+          showSuccessPopup();
+        } catch (error) {
+          console.error("❌ Error submitting booking:", error);
+          alert("There was an error booking your service. Please try again.");
 
-        submitBtn.innerText = "Book Now";
-        submitBtn.disabled = false;
-        submitBtn.style.cursor = "pointer";
+          submitBtn.innerText = "Book Now";
+          submitBtn.disabled = false;
+          submitBtn.style.cursor = "pointer";
+        }
+      } else if (selectedPaymentOption === "advance") {
+        // 'Pay in Advance' অপশন নির্বাচন করা হলে, ডেটা লোকাল স্টোরেজে সংরক্ষণ করে পেমেন্ট পেজে রিডাইরেক্ট করা হবে।
+        localStorage.setItem("pendingBooking", JSON.stringify(newBooking));
+        localStorage.setItem("pendingBookingUID", uid); // UID সংরক্ষণ করা হচ্ছে
+        alert("Redirecting to payment page...");
+        window.location.href = "../options-html/payment.html"; // এটি তোমার পেমেন্ট পেজের URL হবে
       }
     });
   } else {
-    console.log("User not logged in. Redirecting to login page.");
-    // এটি অন্য স্ক্রিপ্ট দ্বারা হ্যান্ডেল করা হবে
+    // লগইন না থাকলে, অন্য স্ক্রিপ্ট দ্বারা হ্যান্ডেল করা হবে
+    console.log("User not logged in. Booking will not be processed.");
   }
 });
 

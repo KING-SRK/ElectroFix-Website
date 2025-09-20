@@ -91,13 +91,13 @@ body {
 }
 
 .signup-btn {
-  background: linear-gradient(45deg, #ffd700, #ffb700);
+  background: linear-gradient(45deg, #ff930f, #fff95b);
   border: 2px solid #ffd700;
   color: #24252a;
 }
 
 .signup-btn:hover {
-  background: linear-gradient(45deg, #00f2ff, #00cfff);
+  background: linear-gradient(45deg, #0061ff, #60efff);
   border-color: #00cfff;
   color: #fff;
 }
@@ -135,8 +135,8 @@ body {
   transform: rotate(-45deg);
 }
 
-  @media
-  (max-width: 768px) {
+/* --- Navigation Menu (Mobile) --- */
+@media (max-width: 768px) {
   .header {
     height: 4.5rem;
     padding: 0 5%;
@@ -151,6 +151,7 @@ body {
     display: flex;
   }
 
+  /* Stylish Nav Menu Container */
   .nav {
     flex-direction: column;
     position: fixed;
@@ -159,9 +160,10 @@ body {
     height: 100vh;
     width: 70%;
     gap: 20px;
-    overflow: hidden;
-    background: rgba(36, 37, 42, 0.95);
-    padding: 6rem 0 0;
+    overflow-y: auto; /* enables scrolling if content is long */
+    background: linear-gradient(to bottom, #24252a, #24252a); /* dark, professional background */
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.4);
+    padding: 6rem 0 2rem;
     transform: translateX(-100%);
     transition: transform 0.4s ease-in-out;
     z-index: 999;
@@ -171,45 +173,59 @@ body {
     transform: translateX(0);
   }
 
-  /* Separate mobile styling for nav links */
+  /* Navigation Links */
   .nav-links {
     flex-direction: column;
     gap: 15px;
+    width: 100%;
+    padding: 0 20px; /* added horizontal padding */
   }
 
   .nav-links a {
     font-size: 1.2rem;
-    padding: 10px;
-    border-bottom: none;
+    padding: 12px 15px;
+    border-radius: 8px; /* rounded corners for buttons */
+    transition: background 0.3s ease, color 0.3s ease;
     width: 100%;
-    text-align: center;
-  }
-
-  /* Mobile-specific hover for nav links */
-  .nav-links a:hover,
-  .nav-links a.active {
-    color: #ff9800;
-    background: rgba(255, 255, 255, 0.1);
+    text-align: left; /* aligns text to the left for better readability */
     border-bottom: none;
+    position: relative;
+    overflow: hidden;
   }
 
-  /* Separate mobile styling for auth buttons */
+  .nav-links a.active {
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
+  }
+
+  .nav-links a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+
+  /* Auth Buttons */
   .auth-buttons {
     flex-direction: column;
     margin-top: 20px;
-    margin-left: 0;
+    width: 100%;
+    padding: 0 20px; /* aligns with links */
   }
 
   .auth-buttons a {
     width: 100%;
-    max-width: 250px;
+    max-width: none; /* remove max-width to use full width */
     text-align: center;
+  }
+
+  .login-btn,
+  .signup-btn {
+    border-radius: 8px;
   }
 
   /* Mobile-specific hover for auth buttons */
   .login-btn:hover {
     background: #ffd700;
-    color: #24252a;
+    color: #1a1a2e;
   }
 
   .signup-btn:hover {

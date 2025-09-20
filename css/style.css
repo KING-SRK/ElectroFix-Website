@@ -29,10 +29,10 @@ body::after {
   width: 100%;
   height: 100%;
   background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.7),
-      rgba(0, 0, 0, 0.6)
-    );
+    to bottom,
+    rgba(0, 0, 0, 0.7),
+    rgba(0, 0, 0, 0.6)
+  );
   z-index: -1;
 }
 
@@ -73,7 +73,7 @@ body::after {
 
 /* Button */
 .btn {
-  background: linear-gradient(45deg, #ffd700, #ffb700);
+  background: linear-gradient(45deg, #fff95b, #ff930f);
   color: #24252a;
   padding: 12px 28px;
   border-radius: 50px;
@@ -104,7 +104,7 @@ body::after {
 }
 
 .btn:hover {
-  background: linear-gradient(45deg, #00f2ff, #00cfff);
+  background: linear-gradient(45deg, #60efff, #0061ff);
   box-shadow: 0 5px 20px rgba(0, 242, 255, 0.4);
   transform: scale(1.05);
 }
@@ -164,7 +164,7 @@ body::after {
 }
 
 .feature-card h3 {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   margin-bottom: 0.7rem;
 }
 
@@ -186,7 +186,7 @@ body::after {
 .feature-btn {
   margin-top: 1.3rem;
   padding: 0.8rem 1.7rem;
-  background: linear-gradient(45deg, #ffd700, #ffae00);
+  background: linear-gradient(45deg, #ff930f, #fff95b);
   border: none;
   border-radius: 10px;
   color: #222;
@@ -216,7 +216,7 @@ body::after {
 }
 
 .feature-btn:hover {
-  background: linear-gradient(45deg, #00f2ff, #00cfff);
+  background: linear-gradient(45deg, #0061ff, #60efff);
   color: #fff;
   transform: translateY(-3px) scale(1.05);
   box-shadow: 0 6px 18px rgba(0, 242, 255, 0.4);
@@ -244,6 +244,7 @@ body::after {
   }
 }
 
+/* ===== Media Query for Small Screens (Phones) ===== */
 @media (max-width: 576px) {
   .hero {
     height: 80vh;
@@ -251,20 +252,80 @@ body::after {
     justify-content: center;
     padding-top: 0;
   }
+
   .hero-text {
     padding-top: 0;
   }
+
   .hero-text h2 {
     font-size: 2.1rem;
   }
+
   .hero-text p {
     font-size: 1rem;
   }
+
   .features {
-    gap: 1.3rem;
-    padding: 3rem 5%;
+    justify-content: space-around;
+    gap: 1rem;
+    padding: 2rem 5%;
   }
+
+  .features {
+    /* Changed from justify-content: space-around to center */
+    justify-content: center;
+    /* Added to create a grid-like layout */
+    display: flex;
+    flex-direction: row; /* Ensure cards are in a row */
+    flex-wrap: wrap; /* Allow cards to wrap to the next line */
+    gap: 1rem; /* Increased gap for better spacing */
+    padding: 2rem 1%;
+  }
+
+  /* Feature cards in mobile */
   .feature-card {
-    width: 100%;
+    /* Removed fixed width and height to make them responsive */
+    width: calc(50% - 1rem); /* Two cards per row with gap */
+    height: 120px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Hides the long text on mobile */
+  .feature-card p,
+  .feature-card .microcopy {
+    display: none;
+  }
+
+  /* Styles for the small cards with icon and short text */
+  .feature-card {
+    padding: 1.5rem;
+    width: calc(24% - 1rem);
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .feature-card h3 {
+    display: block;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+
+  .feature-card .icon {
+    font-size: 2.5rem;
+    margin-bottom: 0;
+  }
+
+  /* Hides the large buttons on mobile */
+  .feature-btn {
+    display: none;
   }
 }

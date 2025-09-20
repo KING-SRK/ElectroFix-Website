@@ -2,10 +2,10 @@
   --background-color: #f5f6fa;
   --card-background: #ffffff;
   --text-color: #3f51b5;
-  --accent-color-start: #3f51b5;
-  --accent-color-end: #2196f3;
-  --accent-color-hover-start: #ff4d4d; /* urgency red */
-  --accent-color-hover-end: #ff1a75; /* persuasive pink */
+  --accent-color-start: #0d41e1;
+  --accent-color-end: #07c8f9;
+  --accent-color-hover-start: #e62314; /* urgency red */
+  --accent-color-hover-end: #f19e18; /* persuasive pink */
   --text-color-light: #000;
   --text-color-dark: #555;
   --border-color: rgba(0, 0, 0, 0.1);

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Advance Payment - ElectroFix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="../options-css/payment.css" />
+</head>
+<body>
+    <div class="payment-container">
+        <h2>Complete Your Advance Payment</h2>
+        
+        <div class="booking-summary-section">
+            <h3>Booking Summary</h3>
+            <div class="summary-details">
+                <p><strong>Customer:</strong> <span id="customerNameSummary">Loading...</span></p>
+                <p><strong>Device Type:</strong> <span id="deviceTypeSummary">Loading...</span></p>
+                <p><strong>Problem:</strong> <span id="problemSummary">Loading...</span></p>
+            </div>
+        </div>
+
+        <p class="payment-instruction">Please scan the QR Code below to complete your payment.</p>
+
+        <div class="qr-box">
+            <img id="qrCodeImage" src="../images/qr.jpg" alt="UPI QR Code" />
+            <p><strong>UPI ID:</strong> merchant@upi</p>
+            <p><strong>Amount:</strong> ₹500 (example)</p>
+        </div>
+
+        <button id="confirmPaymentBtn" class="btn">
+            <span id="buttonText">✅ I have Paid</span>
+            <span id="loadingSpinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Processing...</span>
+        </button>
+        <button id="cancelBtn" class="btn cancel-btn">Cancel Booking</button>
+    </div>
+
+    <div id="successPopup" class="popup-container" style="display: none;">
+        <div class="popup-content">
+            <i class="fas fa-check-circle success-icon"></i>
+            <h3>Payment Info Submitted!</h3>
+            <p>Your booking is marked as 'Paid (Unverified)'. Our team will verify the payment and confirm your booking soon.</p>
+            <button id="okBtn" class="btn">OK</button>
+        </div>
+    </div>
+
+    <script type="module" src="../js/payment.js"></script>
+</body>
+</html>

@@ -165,7 +165,7 @@ form textarea:focus {
   font-size: 1.1rem; /* Adjusted font size */
   font-weight: 600;
   border-radius: 10px;
-  background: linear-gradient(45deg, #ffd700, #ffb700);
+  background: linear-gradient(45deg, #fff95b, #ff930f);
   color: #24252a;
   border: none;
   cursor: pointer;
@@ -174,7 +174,7 @@ form textarea:focus {
 }
 
 .save-btn:hover {
-  background: linear-gradient(45deg, #ffb700, #ffd700);
+  background: linear-gradient(45deg, #ff930f, #fff95b);
   transform: scale(1.03);
   box-shadow: none;
 }
