@@ -137,13 +137,58 @@ body::after {
 
 /* Mobile */
 @media (max-width: 768px) {
+  /* ✅ মোবাইলের জন্য সাদা থিম */
+  body {
+    background: #f0f2f5; /* হালকা ধূসর ব্যাকগ্রাউন্ড */
+    color: #24252a; /* টেক্সট কালার ডার্ক */
+  }
+
+  body::after {
+    background: none; /* ডার্ক ওভারলে সরিয়ে দেওয়া হয়েছে */
+  }
+
+  .profile-container {
+    padding-top: 5rem; /* উপরের হেডার এর জন্য জায়গা */
+  }
+
   .profile-card {
+    background: #fff; /* কার্ড সাদা করা হয়েছে */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: none;
     padding: 2rem 1.2rem;
     max-width: 450px;
   }
+
+  .profile-left {
+    border-right: none;
+  }
+
   .profile-pic {
     width: 180px;
     height: 180px;
+    border: 3px solid #6c63ff; /* নতুন বর্ডার কালার */
+  }
+
+  .profile-name {
+    color: #24252a; /* নামের কালার ডার্ক */
+  }
+
+  .profile-email {
+    color: #555;
+  }
+
+  .info-item i {
+    color: #0b0579; /* আইকনের নতুন কালার */
+  }
+
+  .edit-btn {
+    background: linear-gradient(45deg, #60efff, #0061ff);
+    color: #fff;
+  }
+
+  .edit-btn:hover {
+    background: #5a50e6;
+    transform: scale(1.05);
   }
 }
 

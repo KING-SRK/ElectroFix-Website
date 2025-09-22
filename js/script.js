@@ -1,4 +1,38 @@
+// =======================
+// 🔹 Firebase import
+// =======================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import {
+  getDatabase,
+  ref,
+  get,
+  child,
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+// 🔹 Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyCQneRn2fhr2MBPZ8FpGYQTHnSVXe-Y8oQ",
+  authDomain: "electrofix-website.firebaseapp.com",
+  projectId: "electrofix-website",
+  storageBucket: "electrofix-website.appspot.com",
+  messagingSenderId: "891241046906",
+  appId: "1:891241046906:web:382d83e91f521a357cacc3",
+  databaseURL:
+    "https://electrofix-website-default-rtdb.asia-southeast1.firebasedatabase.app/",
+};
+
+// 🔹 Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+// =======================
 // 🔹 Menu toggle
+// =======================
 const menuToggle = document.getElementById("menu-toggle");
 const nav = document.getElementById("main-nav");
 if (menuToggle) {
@@ -8,7 +42,9 @@ if (menuToggle) {
   });
 }
 
+// =======================
 // 🔹 Active nav link highlight
+// =======================
 const navLinks = document.querySelectorAll(".nav a");
 let currentPath = window.location.pathname.split("/").pop();
 if (currentPath === "" || currentPath === "/") currentPath = "index.html";
@@ -19,7 +55,9 @@ navLinks.forEach((link) => {
   else link.classList.remove("active");
 });
 
+// =======================
 // 🔹 Feature card click (mobile only)
+// =======================
 function isMobile() {
   return window.innerWidth <= 576;
 }
@@ -35,7 +73,9 @@ featureCards.forEach((card) => {
   }
 });
 
+// =======================
 // 🔹 Swiper.js Initialization
+// =======================
 const swiperElement = document.querySelector("#mobileSwiper");
 if (swiperElement) {
   const swiper = new Swiper("#mobileSwiper", {
@@ -48,51 +88,56 @@ if (swiperElement) {
 }
 
 // =======================
-// 🔹 User Info UI Handling (Mobile + Desktop)
+// 🔹 User Info UI Handling (Firebase → Mobile + Desktop)
 // =======================
-function updateAuthUI() {
-  const isLoggedIn = localStorage.getItem("loggedIn") === "true";
-  const userName = localStorage.getItem("userName") || "Guest";
-  const userAddress = localStorage.getItem("userAddress") || "";
-
-  // Mobile
+onAuthStateChanged(auth, async (user) => {
+  const userNameMobile = document.getElementById("user-name-display");
+  const userAddressMobile = document.getElementById("user-address-display");
   const userInfoMobile = document.querySelector(".user-info-mobile");
-  const userNameDisplayMobile = document.getElementById("user-name-display");
-  const userAddressDisplayMobile = document.getElementById(
-    "user-address-display"
-  );
-
-  if (userInfoMobile && userNameDisplayMobile && userAddressDisplayMobile) {
-    if (isLoggedIn) {
-      userInfoMobile.classList.add("active");
-      userNameDisplayMobile.textContent = `Hi, ${userName}`;
-      userAddressDisplayMobile.textContent =
-        userAddress || "Address not available";
-    } else {
-      userInfoMobile.classList.remove("active");
-      userNameDisplayMobile.textContent = "";
-      userAddressDisplayMobile.textContent = "";
-    }
-  }
-
-  // Desktop (nav-links or header desktop)
   const userInfoDesktop = document.querySelector(".user-info-desktop");
-  if (userInfoDesktop) {
-    if (isLoggedIn) {
-      userInfoDesktop.innerHTML = `<span>Hi, ${userName}</span> <small>${
-        userAddress || ""
-      }</small>`;
-    } else {
-      userInfoDesktop.innerHTML = "";
-    }
-  }
 
-  // Show/hide logout button
+  const loginBtn = document.querySelector(".login-btn");
+  const signupBtn = document.querySelector(".signup-btn");
   const logoutBtn = document.getElementById("logout-btn");
-  if (logoutBtn) {
-    logoutBtn.style.display = isLoggedIn ? "inline-block" : "none";
-  }
-}
 
-// পেজ লোড হলে কল করবে
-window.addEventListener("DOMContentLoaded", updateAuthUI);
+  if (user) {
+    try {
+      const snapshot = await get(child(ref(db), `users/${user.uid}`));
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        const name = userData.fullName || "Guest";
+        const address = userData.address || "Address not available";
+
+        // Mobile UI
+        if (userInfoMobile && userNameMobile && userAddressMobile) {
+          userInfoMobile.classList.add("active");
+          userNameMobile.textContent = `Hi, ${name}`;
+          userAddressMobile.textContent = address;
+        }
+
+        // Desktop UI
+        if (userInfoDesktop) {
+          userInfoDesktop.innerHTML = `<span>Hi, ${name}</span> <small>${address}</small>`;
+        }
+
+        // Show only Logout button
+        if (logoutBtn) logoutBtn.style.display = "inline-block";
+        if (loginBtn) loginBtn.style.display = "none";
+        if (signupBtn) signupBtn.style.display = "none";
+      }
+    } catch (err) {
+      console.error("Error fetching user info:", err);
+    }
+  } else {
+    // লগআউট বা লগইন না করা অবস্থায়
+    if (userInfoMobile) userInfoMobile.classList.remove("active");
+    if (userNameMobile) userNameMobile.textContent = "";
+    if (userAddressMobile) userAddressMobile.textContent = "";
+    if (userInfoDesktop) userInfoDesktop.innerHTML = "";
+
+    // Show only Login & Signup buttons
+    if (logoutBtn) logoutBtn.style.display = "none";
+    if (loginBtn) loginBtn.style.display = "inline-block";
+    if (signupBtn) signupBtn.style.display = "inline-block";
+  }
+});

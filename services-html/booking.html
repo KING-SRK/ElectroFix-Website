@@ -19,6 +19,11 @@
     ></script>
   </head>
   <body>
+    <div id="loadingScreen" class="loading-screen">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+
     <section class="booking-section">
       <div class="booking-container">
         <div class="booking-card">
@@ -145,8 +150,8 @@
         <h3>You must be logged in to book a service.</h3>
         <p>Please log in or create an account to continue.</p>
         <div class="modal-buttons">
-          <a href="login.html" class="btn login-btn">Log In</a>
-          <a href="signup.html" class="btn signup-btn">Sign Up</a>
+          <a href="../html/login.html" class="btn login-btn">Log In</a>
+          <a href="../html/signup.html" class="btn signup-btn">Sign Up</a>
         </div>
       </div>
     </div>
@@ -182,7 +187,6 @@
 
       // 🔹 Map for service categories
       const categoryMap = {
-        // AC Services
         ac: {
           displayName: "AC Repair & Services",
           services: {
@@ -201,8 +205,6 @@
             "value-added": "Value-Added Services",
           },
         },
-
-        // Washing Machine Services
         "washing-machine": {
           displayName: "Washing Machine Services",
           services: {
@@ -218,7 +220,6 @@
             "value-added": "Value-Added Services",
           },
         },
-        // Adding alias for wm
         wm: {
           displayName: "Washing Machine Services",
           services: {
@@ -234,8 +235,6 @@
             "value-added": "Value-Added Services",
           },
         },
-
-        // Sewing Machine Services
         "sewing-machine": {
           displayName: "Sewing Machine Services",
           services: {
@@ -250,8 +249,6 @@
             "value-added": "Value-Added Services",
           },
         },
-
-        // Computer Services
         computer: {
           displayName: "Computer Services",
           services: {
@@ -269,7 +266,7 @@
         },
       };
 
-      // ✅ নতুন ফ্ল্যাগ ভেরিয়েবল যোগ করা হয়েছে
+      // ✅ নতুন ফ্ল্যাগ ভেরিয়েবল
       let authCheckCompleted = false;
 
       // 🔹 Load user and service details
@@ -278,45 +275,35 @@
         const bookingSection = document.querySelector(".booking-section");
 
         if (!user) {
-          // User is NOT logged in
           if (!authCheckCompleted) {
-            // Show the popup only the first time
-            authModal.style.display = "block";
+            authModal.style.display = "flex";
             bookingSection.classList.add("blur");
-            authCheckCompleted = true; // Mark that we have shown the popup
+            authCheckCompleted = true;
           }
-          return; // Stop further execution
+          return;
         }
 
-        // If user IS logged in, hide the popup (if it was visible) and proceed
         authModal.style.display = "none";
         bookingSection.classList.remove("blur");
-        authCheckCompleted = true; // Mark as complete for logged-in users too
+        authCheckCompleted = true;
 
         const uid = user.uid;
         const dbRef = ref(db);
         const customerPhoneInput = document.getElementById("customerPhone");
         const countryCode = "+91 ";
 
-        // Set initial value for phone number field
         customerPhoneInput.value = countryCode;
 
-        // Prevent backspacing/deleting the country code
         customerPhoneInput.addEventListener("keydown", (e) => {
           const isAtStart =
             customerPhoneInput.selectionStart <= countryCode.length;
-          const isAtEnd =
-            customerPhoneInput.selectionStart ===
-            customerPhoneInput.value.length;
           const isBackspaceOrDelete =
             e.key === "Backspace" || e.key === "Delete";
-
           if (isBackspaceOrDelete && isAtStart) {
             e.preventDefault();
           }
         });
 
-        // Ensure the country code is always present at the start
         customerPhoneInput.addEventListener("input", () => {
           if (!customerPhoneInput.value.startsWith(countryCode)) {
             customerPhoneInput.value = countryCode;
@@ -329,7 +316,6 @@
             const userData = snapshot.val();
             console.log("✅ User data loaded:", userData);
 
-            // Fill form safely
             document.getElementById("customerName").value =
               userData.fullName ?? "";
             document.getElementById("customerPhone").value =
@@ -337,7 +323,6 @@
                 ? userData.phoneNumber.replace(/^\+91\s?/, "")
                 : "") ?? "";
             customerPhoneInput.value = countryCode + customerPhoneInput.value;
-
             document.getElementById("customerAddress").value =
               userData.address ?? "";
             document.getElementById("customerPincode").value =
@@ -354,9 +339,6 @@
         const categoryKey = (urlParams.get("category") || "").toLowerCase();
         const serviceKey = (urlParams.get("service") || "").toLowerCase();
 
-        console.log("👉 URL থেকে পাওয়া ক্যাটাগরি:", categoryKey);
-        console.log("👉 URL থেকে পাওয়া সার্ভিস:", serviceKey);
-
         const categoryData = categoryMap[categoryKey];
         let categoryText = "Unknown Device";
         let serviceText = "Unknown Service";
@@ -366,20 +348,28 @@
           serviceText = categoryData.services[serviceKey] || "Unknown Service";
         }
 
-        // Show selected service on UI
         const categoryTextEl = document.getElementById("selectedCategoryText");
         const serviceTextEl = document.getElementById("selectedServiceText");
 
         if (categoryTextEl) categoryTextEl.innerText = categoryText;
         if (serviceTextEl) serviceTextEl.innerText = serviceText;
 
-        // Hidden input for form submission
         const deviceTypeInput = document.getElementById("deviceType");
         if (deviceTypeInput)
           deviceTypeInput.value = `${categoryText} > ${serviceText}`;
       });
+
+      // Click outside modal closes it
+      window.addEventListener("click", (e) => {
+        const authModal = document.getElementById("authModal");
+        if (e.target === authModal) {
+          authModal.style.display = "none";
+          window.location.href = "../index.html";
+        }
+      });
     </script>
 
     <script type="module" src="../js/booking.js"></script>
+    <script src="../js/auth.js"></script>
   </body>
 </html>

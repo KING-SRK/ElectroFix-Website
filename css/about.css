@@ -1,4 +1,4 @@
-/* Global Reset */
+/* ===== Global Reset ===== */
 * {
   margin: 0;
   padding: 0;
@@ -12,19 +12,19 @@ body {
   height: 100%;
 }
 
-/* Body */
+/* ===== Body ===== */
 body {
   background: #f4f7fa;
   color: #333;
   line-height: 1.6;
 }
 
-/* Header Section */
+/* ===== Header Section ===== */
 .about-header {
   background: linear-gradient(135deg, #3f51b5, #2196f3);
   color: white;
   text-align: center;
-  padding: 10rem 2rem 7rem;
+  padding: 2rem 1.5rem;
   clip-path: polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
   position: relative;
@@ -38,7 +38,11 @@ body {
   left: -50px;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent 70%);
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.1),
+    transparent 70%
+  );
   animation: pulse 6s infinite linear;
 }
 
@@ -65,7 +69,7 @@ body {
   opacity: 0.9;
 }
 
-/* About Section */
+/* ===== About Section ===== */
 .about-section {
   display: flex;
   align-items: center;
@@ -130,7 +134,14 @@ body {
   box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
 }
 
-/* Responsive */
+/* ===== Responsive ===== */
+@media (max-width: 1200px) {
+  .about-section {
+    padding: 60px 8%;
+    gap: 40px;
+  }
+}
+
 @media (max-width: 992px) {
   .about-header h1 {
     font-size: 2.6rem;
@@ -138,16 +149,22 @@ body {
   .about-header p {
     font-size: 1rem;
   }
+  .about-text h2 {
+    font-size: 2rem;
+  }
 }
 
 @media (max-width: 768px) {
   .about-section {
     flex-direction: column;
-    padding: 50px 25px;
+    padding: 50px 5%;
     text-align: center;
   }
   .about-text h2 {
-    font-size: 2rem;
+    font-size: 1.8rem;
+  }
+  .about-text p {
+    font-size: 1rem;
   }
 }
 
@@ -158,12 +175,19 @@ body {
   .about-header p {
     font-size: 0.95rem;
   }
+  .about-text h2 {
+    font-size: 1.5rem;
+  }
   .about-text p {
+    font-size: 0.9rem;
+  }
+  .about-text .btn {
+    padding: 10px 24px;
     font-size: 0.95rem;
   }
 }
 
-/* Footer */
+/* ===== Footer ===== */
 .footer {
   background: linear-gradient(45deg, #007bff, #00c6ff);
   padding: 1rem 0;

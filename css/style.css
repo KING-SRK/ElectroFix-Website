@@ -133,43 +133,76 @@ body::after {
   color: #333;
 }
 
+/* ===== Gallery Section ===== */
+.electronics-gallery {
+  padding: 2rem 1rem 4rem 1rem;
+  background: linear-gradient(135deg, #f9f9f9, #ffffff);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  max-width: 900px;
+}
+
 /* Scrollable container */
 .gallery-container {
   display: flex;
   overflow-x: auto;
-  gap: 0.5rem;
-  padding-bottom: 0.5rem;
+  gap: 1rem;
+  padding: 0.8rem;
   scroll-behavior: smooth;
 }
 
-/* Hide default scrollbar */
 .gallery-container::-webkit-scrollbar {
   display: none;
 }
 .gallery-container {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
+/* Gallery Item */
 .gallery-item {
   flex: 0 0 auto;
-  width: 120px; /* ছবি আকার */
-  border-radius: 8px;
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
+  background: #fff;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.gallery-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, #fff95b, #ff930f);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 .gallery-item img {
   width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
+  height: 100%;
+  padding: 0.8rem;
+  object-fit: contain;
+  transition: transform 0.3s ease;
 }
 
 /* Hover effect */
 .gallery-item:hover {
-  transform: scale(1.05);
+  transform: translateY(-6px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+.gallery-item:hover img {
+  transform: scale(1.1);
 }
 
 /* Service Features Section */
@@ -401,47 +434,6 @@ body::after {
     background: #007bff;
     width: 12px;
     height: 12px;
-  }
-}
-
-@media (max-width: 576px) {
-  .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background: #fff;
-    border-top: 1px solid #ddd;
-    border-radius: 15px 15px 0 0;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 10;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .bottom-nav .nav-item {
-    flex: 1;
-    text-align: center;
-    color: #333;
-    font-size: 0.8rem;
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-
-  .bottom-nav .nav-item i {
-    display: block;
-    font-size: 1.2rem;
-    margin-bottom: 3px;
-  }
-
-  .bottom-nav .nav-item.active {
-    color: #0d41e1; /* active রঙ */
-  }
-
-  body {
-    padding-bottom: 60px; /* যাতে content nav এর নিচে ঢুকে না যায় */
   }
 }
 

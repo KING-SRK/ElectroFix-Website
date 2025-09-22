@@ -17,7 +17,7 @@
         <form id="editProfileForm">
           <div class="profile-pic-container">
             <img
-              src="../images/profile-pic.jpg"
+              src="../images/user-icon.jpg"
               alt="Profile Picture"
               id="profileImage"
               class="profile-pic-edit"
@@ -146,7 +146,7 @@
               editAddressInput.value = userData.address || "";
               editPostalCodeInput.value = userData.postalCode || ""; // ✅ Fetch and set postal code
               profileImage.src =
-                userData.profileImageUrl || "../images/profile-pic.jpg";
+                userData.profileImageUrl || "../images/user-icon.jpg";
             } else {
               console.log("No user data found in database!");
             }

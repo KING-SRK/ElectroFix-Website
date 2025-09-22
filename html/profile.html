@@ -10,6 +10,11 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <header class="header">
@@ -19,6 +24,25 @@
           <p id="user-name-display"></p>
           <small id="user-address-display"></small>
         </div>
+
+        <div class="nav-mobile-options">
+          <a href="../options-html/my-bookings.html">
+            <i class="ri-calendar-check-line"></i> My Bookings
+          </a>
+          <a href="../options-html/payment-history.html">
+            <i class="ri-receipt-line"></i> Payment History
+          </a>
+          <a href="../options-html/notifications.html">
+            <i class="ri-notification-3-line"></i> Notifications
+          </a>
+          <a href="../html/about.html">
+            <i class="ri-information-2-line"></i> About
+          </a>
+          <a href="../html/contact.html">
+            <i class="ri-mail-line"></i> Contact
+          </a>
+        </div>
+
         <div class="nav-links">
           <a href="../index.html">Home</a>
           <a href="about.html">About</a>
@@ -49,7 +73,7 @@
       <div class="profile-card">
         <div class="profile-left">
           <img
-            src="../images/profile-pic.jpg"
+            src="../images/user-icon.jpg"
             alt="Profile Picture"
             class="profile-pic"
           />
@@ -82,6 +106,26 @@
         </div>
       </div>
     </section>
+
+    <!-- Bottom Navigation (Mobile Only) -->
+    <nav class="bottom-nav">
+      <a href="../index.html" class="nav-item">
+        <i class="ri-home-4-line"></i>
+        <span>Home</span>
+      </a>
+      <a href="../html/services.html" class="nav-item">
+        <i class="ri-briefcase-4-line"></i>
+        <span>Services</span>
+      </a>
+      <a href="../html/profile.html" class="nav-item">
+        <i class="ri-user-3-line"></i>
+        <span>Profile</span>
+      </a>
+      <a href="../html/settings.html" class="nav-item">
+        <i class="ri-settings-4-line"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
 
     <div id="logout-popup" class="popup-container" style="display: none">
       <div class="popup-content">
@@ -167,7 +211,7 @@
                 profilePic.src = userData.profileImageUrl;
               } else {
                 // Fallback to default image if no URL is found
-                profilePic.src = "../images/profile-pic.jpg";
+                profilePic.src = "../images/user-icon.jpg";
               }
             } else {
               alert("No user data found in database!");
@@ -182,7 +226,7 @@
       });
     </script>
 
-    <script src="../js/script.js"></script>
+    <script type="module" src="../js/script.js"></script>
     <script src="../js/logout.js"></script>
   </body>
 </html>

@@ -13,6 +13,11 @@
     />
 
     <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+
+    <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
     />
@@ -26,25 +31,52 @@
           <p id="user-name-display"></p>
           <small id="user-address-display"></small>
         </div>
+
+        <div class="nav-mobile-options">
+          <a href="options-html/my-bookings.html">
+            <i class="ri-calendar-check-line"></i> My Bookings
+          </a>
+          <a href="options-html/payment-history.html">
+            <i class="ri-receipt-line"></i> Payment History
+          </a>
+          <a href="options-html/notifications.html">
+            <i class="ri-notification-3-line"></i> Notifications
+          </a>
+          <a href="html/about.html">
+            <i class="ri-information-2-line"></i> About
+          </a>
+          <a href="html/contact.html"> <i class="ri-mail-line"></i> Contact </a>
+        </div>
+
         <div class="nav-links">
-          <a href="index.html" class="active">Home</a>
-          <a href="html/about.html">About</a>
-          <a href="html/services.html">Services</a>
-          <a href="html/profile.html">Profile</a>
-          <a href="html/contact.html">Contact</a>
+          <a href="index.html" class="active">
+            <i class="fa-solid fa-house"></i> Home
+          </a>
+          <a href="html/about.html">
+            <i class="fa-solid fa-circle-info"></i> About
+          </a>
+          <a href="html/services.html">
+            <i class="fa-solid fa-briefcase"></i> Services
+          </a>
+          <a href="html/profile.html">
+            <i class="fa-solid fa-user"></i> Profile
+          </a>
+          <a href="html/contact.html">
+            <i class="fa-solid fa-envelope"></i> Contact
+          </a>
         </div>
         <div class="auth-buttons">
-          <a href="html/login.html" class="login-btn">Login</a>
-          <a href="html/signup.html" class="signup-btn">Signup</a>
+          <a href="html/login.html" class="login-btn"> Login </a>
+          <a href="html/signup.html" class="signup-btn"> Signup </a>
           <a
             href="#"
             id="logout-btn"
-            class="logout-btn btn"
+            class="logout-btn"
             style="display: none"
           >
-            <span class="icon-on-hover"
-              ><i class="fa-solid fa-power-off"></i
-            ></span>
+            <span class="icon-on-hover">
+              <i class="fa-solid fa-power-off"></i>
+            </span>
             Logout
           </a>
         </div>
@@ -154,7 +186,6 @@
 
     <!-- Electronics Gallery Section -->
     <section class="electronics-gallery">
-      <h2 class="section-title">Our Electronics</h2>
       <div class="gallery-container">
         <!-- প্রতিটি image wrapper -->
         <div class="gallery-item">
@@ -174,21 +205,20 @@
 
     <!-- Bottom Navigation (Mobile Only) -->
     <nav class="bottom-nav">
-      <a href="options-html/bookings.html" class="nav-item">
-        <i class="fas fa-calendar-check"></i>
-        <span>Bookings</span>
+      <a href="index.html" class="nav-item">
+        <i class="ri-home-4-line"></i>
+        <span>Home</span>
       </a>
-      <a href="options-html/payment-history.html" class="nav-item">
-        <i class="fas fa-receipt"></i>
-        <span>Payment</span>
+      <a href="html/services.html" class="nav-item">
+        <i class="ri-briefcase-4-line"></i>
+        <span>Services</span>
       </a>
-      <a href="options-html/notifications.html" class="nav-item">
-        <i class="fas fa-bell"></i>
-        <span>Notifications</span>
+      <a href="html/profile.html" class="nav-item">
+        <i class="ri-user-3-line"></i>
+        <span>Profile</span>
       </a>
-      <a href="options-html/help.html" class="nav-item">
-        <i class="fas fa-question-circle"></i>
-        <span>Help</span>
+      <a href="html/settings.html" class="nav-item">
+        <i class="ri-settings-4-line"></i> Settings
       </a>
     </nav>
 
@@ -206,7 +236,7 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-    <script src="js/script.js"></script>
+    <script type="module" src="js/script.js"></script>
     <script src="js/logout.js"></script>
   </body>
 </html>

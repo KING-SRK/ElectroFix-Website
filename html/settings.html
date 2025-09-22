@@ -3,10 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ElectroFix - Services</title>
-    <link rel="stylesheet" href="../css/services.css" />
+    <title>Settings</title>
+    <link rel="stylesheet" href="../css/settings.css" />
     <link rel="stylesheet" href="../css/header.css" />
-
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
@@ -71,78 +70,33 @@
       </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-      <h2>Our Services</h2>
-      <p>
-        Don’t wait until it’s too late — <br />
-        Fast, Reliable & Affordable Electronics Repair <br />
-        <span style="color: #ffd700; font-weight: bold"
-          >Join thousands who already fixed their devices!</span
-        >
-      </p>
-    </section>
+    <div class="settings-container">
+      <h2>Settings</h2>
 
-    <!-- Services Section -->
-    <section class="services">
-      <div class="service-card">
-        <img src="../images/ac.jpg" alt="AC Repair" />
-        <h3>AC Repair</h3>
-        <p>
-          Don’t let the heat ruin your comfort — <br />
-          Expert AC service with guaranteed results.
-        </p>
-        <a href="../services-html/ac.html">
-          <button class="service-btn">Fix My AC Now</button>
-        </a>
+      <!-- Profile Info -->
+      <div class="setting-item">
+        <p><strong>Email:</strong> <span id="user-email">Loading...</span></p>
       </div>
 
-      <div class="service-card">
-        <img src="../images/washing.jpg" alt="Washing Machine Repair" />
-        <h3>Washing Machine Repair</h3>
-        <p>
-          A broken washer means wasted time. <br />
-          We fix it fast with genuine parts.
-        </p>
-        <a href="../services-html/washing-machine.html">
-          <button class="service-btn">Restore My Washer</button>
-        </a>
+      <!-- Notification Toggle -->
+      <div class="setting-item">
+        <label>
+          <span>Notifications</span>
+          <input type="checkbox" id="notif-toggle" />
+        </label>
       </div>
 
-      <div class="service-card">
-        <img src="../images/sewing.jpg" alt="Sewing Machine Repair" />
-        <h3>Sewing Machine Repair</h3>
-        <p>
-          Don’t risk delays in your work. <br />
-          Trusted sewing machine repairs you can count on.
-        </p>
-        <a href="../services-html/sewing-machine.html">
-          <button class="service-btn">Repair It Today</button>
-        </a>
+      <!-- Dark Mode Toggle -->
+      <div class="setting-item">
+        <label>
+          <span>Dark Mode</span>
+          <input type="checkbox" id="dark-toggle" />
+        </label>
       </div>
 
-      <div class="service-card">
-        <img src="../images/computer.jpg" alt="Computer Repair" />
-        <h3>Computer Repair</h3>
-        <p>
-          Every second with a broken PC costs you more. <br />
-          Get it fixed before it’s too late.
-        </p>
-        <a href="../services-html/computer.html">
-          <button class="service-btn">Save My PC</button>
-        </a>
-      </div>
-    </section>
-
-    <div id="logout-popup" class="popup-container" style="display: none">
-      <div class="popup-content">
-        <p>Are you sure you want to log out?</p>
-        <div class="popup-buttons">
-          <button id="confirm-logout-btn" class="btn">Yes, Log Out</button>
-          <button id="cancel-logout-btn" class="btn cancel-btn">
-            No, Cancel
-          </button>
-        </div>
+      <!-- Logout -->
+      <div class="setting-item">
+        <button id="logout-btn">Logout</button>
       </div>
     </div>
 
@@ -165,12 +119,52 @@
       </a>
     </nav>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <p>© 2025 ElectroFix. All rights reserved.</p>
-    </footer>
+    <script>
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
+      document.addEventListener("DOMContentLoaded", () => {
+        const emailSpan = document.getElementById("user-email");
+        const notifToggle = document.getElementById("notif-toggle");
+        const darkToggle = document.getElementById("dark-toggle");
+
+        // Firebase Auth - show user email
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            emailSpan.textContent = user.email;
+          } else {
+            emailSpan.textContent = "No user logged in";
+          }
+        });
+
+        // Notification Toggle
+        notifToggle.addEventListener("change", () => {
+          if (notifToggle.checked) {
+            alert("Notifications enabled ✅");
+          } else {
+            alert("Notifications disabled ❌");
+          }
+        });
+
+        // Dark Mode Toggle
+        darkToggle.addEventListener("change", () => {
+          if (darkToggle.checked) {
+            document.body.style.background = "#222";
+            document.body.style.color = "#fff";
+          } else {
+            document.body.style.background = "#f9f9f9";
+            document.body.style.color = "#000";
+          }
+        });
+      });
+    </script>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/settings.js"></script>
     <script type="module" src="../js/script.js"></script>
-    <script src="../js/logout.js"></script>
+    <script type="module" src="../js/logout.js"></script>
   </body>
 </html>

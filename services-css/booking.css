@@ -262,7 +262,7 @@ body {
 }
 
 .selected-service-card #selectedCategoryText {
-  font-size: 1.8rem; /* বড় */
+  font-size: 1.8rem; /* বড় */
   font-weight: 700;
   color: #004085;
   margin-bottom: 8px;
@@ -327,14 +327,14 @@ body {
 
 /* --- Modal (Popup) Styles --- */
 .modal {
-  display: none; /* By default, hide the modal */
+  display: none;
   position: fixed;
   z-index: 1000;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* Black w/ opacity */
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -350,6 +350,8 @@ body {
   text-align: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease-out;
+  width: 90%;
+  box-sizing: border-box;
 }
 
 .modal-content h3 {
@@ -361,6 +363,13 @@ body {
 .modal-content p {
   color: #666;
   margin-bottom: 25px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .modal-buttons .btn {
@@ -418,6 +427,40 @@ body {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 9999;
+}
+.loading-screen.hidden {
+  display: none;
+}
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ccc;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 
@@ -494,7 +537,6 @@ body {
   }
 
   .modal-content {
-    margin: 20% auto;
     max-width: 90%;
     padding: 20px;
   }
