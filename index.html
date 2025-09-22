@@ -11,11 +11,21 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
+    />
   </head>
   <body>
+    <!-- Header -->
     <header class="header">
       <div class="logo"><img src="images/logo.png" alt="" /></div>
       <nav class="nav" id="main-nav">
+        <div class="user-info-mobile">
+          <p id="user-name-display"></p>
+          <small id="user-address-display"></small>
+        </div>
         <div class="nav-links">
           <a href="index.html" class="active">Home</a>
           <a href="html/about.html">About</a>
@@ -26,10 +36,21 @@
         <div class="auth-buttons">
           <a href="html/login.html" class="login-btn">Login</a>
           <a href="html/signup.html" class="signup-btn">Signup</a>
+          <a
+            href="#"
+            id="logout-btn"
+            class="logout-btn btn"
+            style="display: none"
+          >
+            <span class="icon-on-hover"
+              ><i class="fa-solid fa-power-off"></i
+            ></span>
+            Logout
+          </a>
         </div>
       </nav>
       <div class="menu-toggle" id="menu-toggle">
-        <span></span>
+        <span class="hamburger"></span>
         <span></span>
         <span></span>
       </div>
@@ -44,15 +65,48 @@
           Expert technicians, genuine parts — get your device fixed today with a
           90-day warranty.
         </p>
+
         <a href="html/services.html" class="btn">Get Started</a>
       </div>
     </section>
 
+    <!-- Mobile Slider Section -->
+    <section class="mobile-slider">
+      <div class="swiper mySwiper" id="mobileSwiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <img src="images/slider1.jpg" alt="Repair Service 1" />
+          </div>
+          <div class="swiper-slide">
+            <img src="images/slider2.jpg" alt="Repair Service 2" />
+          </div>
+          <div class="swiper-slide">
+            <img src="images/slider3.jpg" alt="Repair Service 3" />
+          </div>
+          <div class="swiper-slide">
+            <img src="images/slider4.jpg" alt="Repair Service 4" />
+          </div>
+          <div class="swiper-slide">
+            <img src="images/slider5.jpg" alt="Repair Service 5" />
+          </div>
+          <div class="swiper-slide">
+            <img src="images/slider6.jpg" alt="Repair Service 6" />
+          </div>
+          <div class="swiper-slide">
+            <img src="images/slider7.jpg" alt="Repair Service 7" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="mobile-slider-dots">
+      <div class="swiper-pagination"></div>
+    </div>
+
+    <!-- Features Section -->
     <section class="features">
       <div class="feature-card" data-url="options-html/my-bookings.html">
-        <div class="icon">
-          <i class="fa-solid fa-calendar-check"></i>
-        </div>
+        <div class="icon"><i class="fa-solid fa-calendar-check"></i></div>
         <h3>My Bookings</h3>
         <p>
           Don’t miss any service — keep track of all your bookings in one place.
@@ -64,27 +118,19 @@
       </div>
 
       <div class="feature-card" data-url="options-html/payment-history.html">
-        <div class="icon">
-          <i class="fas fa-receipt"></i>
-        </div>
+        <div class="icon"><i class="fas fa-receipt"></i></div>
         <h3>Payment History</h3>
         <p>Check all your past transactions & payment records securely.</p>
-        <a
-          href="options-html/payment-history.html"
-          class="feature-btn"
-          data-url="options-html/payment-history.html"
+        <a href="options-html/payment-history.html" class="feature-btn"
+          >View History</a
         >
-          View History
-        </a>
-        <small class="microcopy">
-          Track payments anytime — transparent & safe.
-        </small>
+        <small class="microcopy"
+          >Track payments anytime — transparent & safe.</small
+        >
       </div>
 
       <div class="feature-card" data-url="options-html/notifications.html">
-        <div class="icon">
-          <i class="fas fa-bell"></i>
-        </div>
+        <div class="icon"><i class="fas fa-bell"></i></div>
         <h3>Notifications</h3>
         <p>Never miss a repair update — real-time alerts keep you ahead.</p>
         <a href="options-html/notifications.html" class="feature-btn"
@@ -96,9 +142,7 @@
       </div>
 
       <div class="feature-card" data-url="options-html/help.html">
-        <div class="icon">
-          <i class="fas fa-question-circle"></i>
-        </div>
+        <div class="icon"><i class="fas fa-question-circle"></i></div>
         <h3>Help</h3>
         <p>We’re here 24/7 — friendly support whenever you need us.</p>
         <button class="feature-btn" data-url="options-html/help.html">
@@ -108,6 +152,61 @@
       </div>
     </section>
 
+    <!-- Electronics Gallery Section -->
+    <section class="electronics-gallery">
+      <h2 class="section-title">Our Electronics</h2>
+      <div class="gallery-container">
+        <!-- প্রতিটি image wrapper -->
+        <div class="gallery-item">
+          <img src="images/ac.png" alt="Electronic 1" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/washing.png" alt="Electronic 2" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/sewing.png" alt="Electronic 3" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/computer.png" alt="Electronic 4" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom Navigation (Mobile Only) -->
+    <nav class="bottom-nav">
+      <a href="options-html/bookings.html" class="nav-item">
+        <i class="fas fa-calendar-check"></i>
+        <span>Bookings</span>
+      </a>
+      <a href="options-html/payment-history.html" class="nav-item">
+        <i class="fas fa-receipt"></i>
+        <span>Payment</span>
+      </a>
+      <a href="options-html/notifications.html" class="nav-item">
+        <i class="fas fa-bell"></i>
+        <span>Notifications</span>
+      </a>
+      <a href="options-html/help.html" class="nav-item">
+        <i class="fas fa-question-circle"></i>
+        <span>Help</span>
+      </a>
+    </nav>
+
+    <div id="logout-popup" class="popup-container" style="display: none">
+      <div class="popup-content">
+        <p>Are you sure you want to log out?</p>
+        <div class="popup-buttons">
+          <button id="confirm-logout-btn" class="btn">Yes, Log Out</button>
+          <button id="cancel-logout-btn" class="btn cancel-btn">
+            No, Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/logout.js"></script>
   </body>
 </html>

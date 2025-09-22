@@ -3,8 +3,8 @@
   --background-color: #f5f6fa; /* main page background */
   --card-background: #ffffff; /* card or form background */
   --text-color: #3f51b5;
-  --accent-color: linear-gradient(135deg, #3f51b5, #2196f3);
-  --accent-color-hover: linear-gradient(135deg, #2196f3, #3f51b5);
+  --accent-color: linear-gradient(135deg, #0d41e1, #07c8f9);
+  --accent-color-hover: linear-gradient(135deg, #07c8f9, #0d41e1);
   --text-color-light: #ffffff; /* main text color */
   --text-color-medium: #333; /* medium text */
   --text-color-dark: #000; /* darker text */

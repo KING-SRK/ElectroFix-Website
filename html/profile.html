@@ -15,6 +15,10 @@
     <header class="header">
       <div class="logo"><img src="../images/logo.png" alt="" /></div>
       <nav class="nav" id="main-nav">
+        <div class="user-info-mobile">
+          <p id="user-name-display"></p>
+          <small id="user-address-display"></small>
+        </div>
         <div class="nav-links">
           <a href="../index.html">Home</a>
           <a href="about.html">About</a>
@@ -23,8 +27,15 @@
           <a href="contact.html">Contact</a>
         </div>
         <div class="auth-buttons">
-          <a href="login.html" class="login-btn">Login</a>
-          <a href="signup.html" class="signup-btn">Signup</a>
+          <a href="html/login.html" class="login-btn">Login</a>
+          <a href="html/signup.html" class="signup-btn">Signup</a>
+          <a
+            href="#"
+            id="logout-btn"
+            class="logout-btn btn"
+            style="display: none"
+            >Logout</a
+          >
         </div>
       </nav>
       <div class="menu-toggle" id="menu-toggle">
@@ -71,6 +82,18 @@
         </div>
       </div>
     </section>
+
+    <div id="logout-popup" class="popup-container" style="display: none">
+      <div class="popup-content">
+        <p>Are you sure you want to log out?</p>
+        <div class="popup-buttons">
+          <button id="confirm-logout-btn" class="btn">Yes, Log Out</button>
+          <button id="cancel-logout-btn" class="btn cancel-btn">
+            No, Cancel
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script type="module">
       // 🔹 Firebase import (already present)
@@ -160,5 +183,6 @@
     </script>
 
     <script src="../js/script.js"></script>
+    <script src="../js/logout.js"></script>
   </body>
 </html>

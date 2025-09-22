@@ -120,6 +120,58 @@ body::after {
   overflow: hidden;
 }
 
+.electronics-gallery {
+  padding: 5rem 0.5rem;
+  background-color: #f9f9f9;
+}
+
+.electronics-gallery .section-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #333;
+}
+
+/* Scrollable container */
+.gallery-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+  scroll-behavior: smooth;
+}
+
+/* Hide default scrollbar */
+.gallery-container::-webkit-scrollbar {
+  display: none;
+}
+.gallery-container {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.gallery-item {
+  flex: 0 0 auto;
+  width: 120px; /* ছবি আকার */
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* Hover effect */
+.gallery-item:hover {
+  transform: scale(1.05);
+}
+
 /* Service Features Section */
 .features {
   display: flex;
@@ -222,6 +274,10 @@ body::after {
   box-shadow: 0 6px 18px rgba(0, 242, 255, 0.4);
 }
 
+.bottom-nav {
+  display: none;
+}
+
 /* Media Queries */
 @media (max-width: 992px) {
   .hero-text h2 {
@@ -244,88 +300,154 @@ body::after {
   }
 }
 
-/* ===== Media Query for Small Screens (Phones) ===== */
 @media (max-width: 576px) {
+  /* ===== Hero Section ===== */
   .hero {
-    height: 80vh;
-    text-align: center;
-    justify-content: center;
-    padding-top: 0;
-  }
-
-  .hero-text {
-    padding-top: 0;
-  }
-
-  .hero-text h2 {
-    font-size: 2.1rem;
-  }
-
-  .hero-text p {
-    font-size: 1rem;
-  }
-
-  .features {
-    justify-content: space-around;
-    gap: 1rem;
-    padding: 2rem 5%;
-  }
-
-  .features {
-    /* Changed from justify-content: space-around to center */
-    justify-content: center;
-    /* Added to create a grid-like layout */
-    display: flex;
-    flex-direction: row; /* Ensure cards are in a row */
-    flex-wrap: wrap; /* Allow cards to wrap to the next line */
-    gap: 1rem; /* Increased gap for better spacing */
-    padding: 2rem 1%;
-  }
-
-  /* Feature cards in mobile */
-  .feature-card {
-    /* Removed fixed width and height to make them responsive */
-    width: calc(50% - 1rem); /* Two cards per row with gap */
-    height: 120px;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    position: relative;
+    background: linear-gradient(135deg, #0d41e1, #07c8f9);
+    color: #000;
+    padding: 2rem 1.5rem;
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 50% 100%, 0 75%);
     align-items: center;
+    min-height: 50vh;
+    text-align: center;
   }
 
-  /* Hides the long text on mobile */
-  .feature-card p,
-  .feature-card .microcopy {
+  .hero .hero-text h2 {
     display: none;
   }
 
-  /* Styles for the small cards with icon and short text */
-  .feature-card {
-    padding: 1.5rem;
-    width: calc(24% - 1rem);
-    height: 120px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
+  .hero .hero-text h4 {
+    font-size: 1.2rem;
+    color: #fff;
   }
 
-  .feature-card h3 {
-    display: block;
+  .hero .hero-text p {
     font-size: 0.9rem;
-    margin-top: 10px;
-    margin-bottom: 0;
+    color: #fff;
   }
 
-  .feature-card .icon {
-    font-size: 2.5rem;
-    margin-bottom: 0;
+  .hero .hero-text .btn {
+    color: #000;
   }
 
-  /* Hides the large buttons on mobile */
-  .feature-btn {
+  body {
+    background: #fff;
+  }
+
+  body::after {
+    display: none;
+  }
+
+  /* ===== Features Section ===== */
+  .features {
+    display: none; /* মোবাইলে features লুকিয়ে দাও */
+  }
+
+  /* ===== Mobile Slider Section ===== */
+  .mobile-slider {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    margin: 1.5rem 0 0;
+    padding: 0 1.5rem;
+  }
+
+  .mobile-slider-dots {
+    width: 100%;
+    text-align: center;
+    transform: translateY(30px);
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Swiper wrapper */
+  .swiper {
+    width: 100%;
+    position: relative;
+    padding-bottom: 40px;
+  }
+
+  .swiper-wrapper {
+    display: flex;
+  }
+
+  .swiper-slide {
+    width: 100%; /* একটিমাত্র slide পুরো width নেবে */
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .swiper-slide img {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+  }
+
+  /* Pagination dots */
+  .swiper-pagination {
+    position: static;
+  }
+
+  .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: #bbb;
+    opacity: 1;
+    margin: 0 5px;
+  }
+
+  .swiper-pagination-bullet-active {
+    background: #007bff;
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    border-radius: 15px 15px 0 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 10;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .bottom-nav .nav-item {
+    flex: 1;
+    text-align: center;
+    color: #333;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .bottom-nav .nav-item i {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 3px;
+  }
+
+  .bottom-nav .nav-item.active {
+    color: #0d41e1; /* active রঙ */
+  }
+
+  body {
+    padding-bottom: 60px; /* যাতে content nav এর নিচে ঢুকে না যায় */
+  }
+}
+
+/* For larger screens, ensure the slider is hidden */
+@media (min-width: 577px) {
+  .mobile-slider {
     display: none;
   }
 }

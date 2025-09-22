@@ -19,7 +19,7 @@ body {
   align-items: center;
   height: 5rem;
   padding: 0 5%;
-  background: rgba(36, 37, 42, 0.6);
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(8px);
   position: fixed;
   top: 0;
@@ -72,7 +72,7 @@ body {
 
 .auth-buttons a {
   padding: 10px 22px;
-  border-radius: 50px;
+  border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s ease;
@@ -102,29 +102,146 @@ body {
   color: #fff;
 }
 
+/* Logout Button Styling */
+.logout-btn {
+  /* আগের স্টাইলগুলো ঠিক আছে */
+  position: relative;
+  padding: 12px 28px;
+  border-radius: 10px;
+  text-decoration: none;
+  border: 2px solid #ef233c;
+  font-weight: bold;
+  font-size: 1rem;
+  background: transparent;
+  color: #ef233c;
+  transition: 0.3s ease;
+  overflow: hidden; /* ভেতরের content-কে বাইরে যেতে বাধা দেয় */
+}
+
+/* আইকন কন্টেইনারের জন্য নতুন স্টাইল */
+.icon-on-hover {
+  position: absolute;
+  top: 50%;
+  left: 0; /* প্রাথমিকভাবে এটি বোতামের বাম প্রান্তে থাকবে */
+  transform: translate(-100%, -50%); /* এটিকে পুরোপুরি বামে সরিয়ে দেয় */
+  font-size: 1.2rem;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+/* হোভার করলে আইকন ভিতরে চলে আসবে */
+.logout-btn:hover .icon-on-hover {
+  transform: translate(10px, -50%); /* ডানদিকে 10px সরিয়ে আনে */
+  color: #fff; /* হোভার করলে রং পরিবর্তন হবে */
+}
+
+/* হোভার করলে বোতামের টেক্সট-এর জন্য প্যাডিং */
+.logout-btn:hover {
+  background: linear-gradient(45deg, #ef233c, #d90429);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* Custom Popup Styles */
+.popup-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: #fff;
+  color: #333;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+  max-width: 400px;
+  width: 90%;
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+}
+
+.popup-container.show .popup-content {
+  transform: scale(1);
+}
+
+.popup-content p {
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.popup-buttons .btn {
+  background: linear-gradient(45deg, #e20b8c, #f84b00);
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: none;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.popup-buttons .cancel-btn {
+  background: #ddd;
+  color: #555;
+}
+
+.popup-buttons .cancel-btn:hover {
+  background: #ccc;
+}
+
 /* --- Hamburger Menu Icon --- */
 .menu-toggle {
-  display: none;
+  display: none; /* ✅ ডিফল্টভাবে লুকানো থাকবে */
   flex-direction: column;
   justify-content: space-between;
-  width: 30px;
-  height: 22px;
+  width: 45px;
+  height: 35px;
   cursor: pointer;
   z-index: 1001;
+  border: 2px solid #ffd700;
+  padding: 5px;
+  border-radius: 5px;
 }
 
 .menu-toggle span {
   display: block;
   height: 3px;
-  width: 100%;
   background: #ffd700;
   border-radius: 2px;
-  transition: 0.4s;
-  transform-origin: left center;
+  transition: transform 0.4s ease, width 0.4s ease;
+  margin-left: auto; /* ✅ সব লাইন ডানদিকে যাবে */
 }
 
+/* বড় থেকে ছোট লাইনের ডিজাইন */
+.menu-toggle span:nth-child(1) {
+  width: 100%;
+}
+
+.menu-toggle span:nth-child(2) {
+  width: 70%;
+}
+
+.menu-toggle span:nth-child(3) {
+  width: 40%;
+}
+
+/* অ্যানিমেশনের জন্য আপডেট করা কোড */
 .menu-toggle.active span:nth-child(1) {
-  transform: rotate(45deg);
+  transform: rotate(45deg) translate(8px, 8px); /* X অ্যানিমেশনের জন্য adjust করা হয়েছে */
+  width: 100%; /* হোভার করলে সম্পূর্ণ প্রস্থে ফিরবে */
 }
 
 .menu-toggle.active span:nth-child(2) {
@@ -132,7 +249,8 @@ body {
 }
 
 .menu-toggle.active span:nth-child(3) {
-  transform: rotate(-45deg);
+  transform: rotate(-45deg) translate(8px, -8px); /* X অ্যানিমেশনের জন্য adjust করা হয়েছে */
+  width: 100%; /* হোভার করলে সম্পূর্ণ প্রস্থে ফিরবে */
 }
 
 /* --- Navigation Menu (Mobile) --- */
@@ -144,6 +262,38 @@ body {
 
   .logo img {
     height: 45px;
+    border: 2px solid #ffd700;
+    padding: 5px;
+    border-radius: 15px;
+  }
+
+  .user-info-mobile {
+    display: none; /* ডিফল্টভাবে লুকানো থাকবে */
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 5px;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+  }
+
+  /* লগইন করা থাকলে এই ক্লাসটি যোগ হবে */
+  .user-info-mobile.active {
+    display: flex; /* লগইন করা থাকলে দেখাবে */
+  }
+
+  .user-info-mobile p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ffd700; /* নামের জন্য হাইলাইট রঙ */
+    margin: 0;
+  }
+
+  .user-info-mobile small {
+    font-size: 0.8rem;
+    color: #ccc;
+    margin: 0;
   }
 
   /* Show hamburger menu and hide the desktop menu */
@@ -161,7 +311,11 @@ body {
     width: 70%;
     gap: 20px;
     overflow-y: auto; /* enables scrolling if content is long */
-    background: linear-gradient(to bottom, #24252a, #24252a); /* dark, professional background */
+    background: linear-gradient(
+      to bottom,
+      #24252a,
+      #24252a
+    ); /* dark, professional background */
     box-shadow: 5px 0 15px rgba(0, 0, 0, 0.4);
     padding: 6rem 0 2rem;
     transform: translateX(-100%);
@@ -232,6 +386,15 @@ body {
     background: linear-gradient(45deg, #00f2ff, #00cfff);
     border-color: #00cfff;
     color: #fff;
+  }
+}
+
+@media (max-width: 576px) {
+  .header {
+    height: 4rem;
+    padding: 0 5%;
+    background: transparent;
+    backdrop-filter: none;
   }
 }
 

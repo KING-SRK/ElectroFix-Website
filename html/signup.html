@@ -343,6 +343,11 @@
           hideLoader();
           showSuccessPopup();
 
+          localStorage.setItem("loggedIn", "true");
+          localStorage.setItem("uid", user.uid); // ✅ নতুন লাইন
+          localStorage.setItem("userName", fullName);
+          localStorage.setItem("userAddress", address);
+
           setTimeout(() => {
             signupForm.reset();
             window.location.href = "../index.html";
