@@ -381,7 +381,7 @@
         }
       });
 
-      // 🔹 Address autofill + realtime save
+      // 🔹 Address autofill + realtime save (Google Maps API)
       window.fillAddress = function () {
         if (!navigator.geolocation) {
           alert("Geolocation is not supported by your browser.");
@@ -401,24 +401,54 @@
 
             try {
               const res = await fetch(
-                `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=YOUR_GOOGLE_MAPS_API_KEY`
               );
               const data = await res.json();
-              const address = data.display_name || `${lat}, ${lon}`;
-              const postalCode = data.address.postcode || "";
 
-              // input field এ বসাও
-              addressInput.value = address;
+              if (data.status !== "OK")
+                throw new Error("Failed to fetch address");
+
+              const result = data.results[0];
+              const components = result.address_components;
+
+              // 🔹 Helper function to get component by type
+              const getComponent = (type) => {
+                const comp = components.find((c) => c.types.includes(type));
+                return comp ? comp.long_name : "";
+              };
+
+              const houseNumber = getComponent("street_number");
+              const road = getComponent("route");
+              const neighborhood =
+                getComponent("neighborhood") ||
+                getComponent("sublocality_level_1");
+              const city =
+                getComponent("locality") ||
+                getComponent("administrative_area_level_2");
+              const district =
+                getComponent("administrative_area_level_2") || "";
+              const state = getComponent("administrative_area_level_1");
+              const country = getComponent("country");
+              const postalCode = getComponent("postal_code");
+
+              // 🔹 Combine full detailed address
+              const fullAddress =
+                `${houseNumber} ${road}, ${neighborhood}, ${city}, ${district}, ${state}, ${country}, ${postalCode}`
+                  .replace(/(, )+/g, ", ")
+                  .replace(/^, |, $/g, "");
+
+              // 🔹 Input field এ বসাও
+              addressInput.value = fullAddress;
               document.getElementById("postalCode").value = postalCode;
 
-              // ✅ এখানে অটো-রি-সাইজ ফাংশন কল করা হচ্ছে
+              // ✅ অটো-রি-সাইজ
               autoResizeTextarea();
 
-              // 🔹 যদি ইতিমধ্যে ইউজার লগইন করা থাকে তবে সাথে সাথে DB তে সেভ করো
+              // 🔹 যদি ইউজার ইতিমধ্যে লগইন করে থাকে, DB তে আপডেট করো
               const currentUser = auth.currentUser;
               if (currentUser) {
                 await update(ref(database, "users/" + currentUser.uid), {
-                  address: address,
+                  address: fullAddress,
                   postalCode: postalCode,
                   location: {
                     latitude: lat,
@@ -426,9 +456,10 @@
                   },
                   updatedAt: new Date().toISOString(),
                 });
-                console.log("📍 Location and postal code saved in database ✅");
+                console.log("📍 Full location saved in database ✅");
               }
-            } catch {
+            } catch (error) {
+              console.error("Error fetching detailed address:", error);
               addressInput.value = `${lat}, ${lon}`;
             } finally {
               hideLoader();
