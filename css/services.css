@@ -212,7 +212,7 @@ body {
 /* Small Mobile */
 @media (max-width: 576px) {
   .hero {
-    padding: 6rem 1rem 3rem;
+    padding: 5rem 1rem 3rem;
   }
   .hero h2 {
     font-size: 1.6rem;

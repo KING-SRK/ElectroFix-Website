@@ -322,7 +322,7 @@ body {
 
   /* 🆕 Responsive styles for the no-bookings image */
   .no-bookings-placeholder img {
-    max-width: 150px; /* Reduce image size on small screens */
+    max-width: 400px; /* Reduce image size on small screens */
     margin-bottom: 15px;
   }
 

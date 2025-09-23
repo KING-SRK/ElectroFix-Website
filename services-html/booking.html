@@ -21,7 +21,7 @@
   <body>
     <div id="loadingScreen" class="loading-screen">
       <div class="spinner"></div>
-      <p>Loading...</p>
+      <p>Loading Please Wait...</p>
     </div>
 
     <section class="booking-section">
@@ -115,30 +115,68 @@
               </div>
 
               <div class="form-group payment-options">
-                <label>Payment Method</label>
-                <div class="radio-group">
-                  <label class="radio-label" id="advancePaymentOption">
-                    <input
-                      type="radio"
-                      name="paymentOption"
-                      value="advance"
-                      required
-                    />
-                    Pay in Advance (Online)
-                  </label>
-                  <label class="radio-label" id="afterServiceOption">
-                    <input
-                      type="radio"
-                      name="paymentOption"
-                      value="after-service"
-                      required
-                    />
-                    Pay After Service (Cash/Online)
-                  </label>
+                <label class="accordion-header" for="paymentMethodAccordion"
+                  >Payment Method</label
+                >
+                <div class="accordion-container" id="paymentMethodAccordion">
+                  <div class="accordion-item">
+                    <div
+                      class="accordion-title"
+                      id="advanceTitle"
+                      data-payment="advance"
+                    >
+                      <label for="advancePaymentOption" class="accordion-label">
+                        Pay in Advance (Online)
+                      </label>
+                      <span class="accordion-icon"
+                        ><i class="fas fa-chevron-down"></i
+                      ></span>
+                    </div>
+                    <div class="accordion-content">
+                      <p>
+                        By paying in advance, you can confirm your booking
+                        instantly and get priority service. You will be
+                        redirected to a secure payment page.
+                      </p>
+                      <button
+                        type="submit"
+                        class="btn submit-btn"
+                        data-payment="advance"
+                      >
+                        Proceed to Pay
+                      </button>
+                    </div>
+                  </div>
+                  <div class="accordion-item">
+                    <div
+                      class="accordion-title"
+                      id="afterServiceTitle"
+                      data-payment="after-service"
+                    >
+                      <label for="afterServiceOption" class="accordion-label">
+                        Pay After Service (Cash/Online)
+                      </label>
+                      <span class="accordion-icon"
+                        ><i class="fas fa-chevron-down"></i
+                      ></span>
+                    </div>
+                    <div class="accordion-content">
+                      <p>
+                        You can book your service now and pay the technician
+                        directly after the service is completed. We accept both
+                        cash and online payments.
+                      </p>
+                      <button
+                        type="submit"
+                        class="btn submit-btn"
+                        data-payment="after-service"
+                      >
+                        Book Now
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              <button type="submit" class="btn submit-btn">Book Now</button>
             </form>
           </div>
         </div>

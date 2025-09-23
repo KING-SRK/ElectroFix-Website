@@ -28,6 +28,7 @@ const auth = getAuth();
 
 // 🔹 DOM Elements
 const confirmPaymentBtn = document.getElementById("confirmPaymentBtn");
+const payWithUpiBtn = document.getElementById("payWithUpiBtn"); // 🔹 নতুন ভেরিয়েবল
 const cancelBtn = document.getElementById("cancelBtn");
 const buttonText = document.getElementById("buttonText");
 const loadingSpinner = document.getElementById("loadingSpinner");
@@ -60,7 +61,26 @@ onAuthStateChanged(auth, (user) => {
 
   const currentUID = user.uid;
 
-  // Confirm Payment Button
+  // 🔹 Pay with UPI Button
+  payWithUpiBtn.addEventListener("click", () => {
+    // এখানে আপনার আসল UPI ID এবং টাকার পরিমাণ দিন
+    const upiId = "";
+    const amount = "500.00"; // টাকার পরিমাণ উদাহরণস্বরূপ
+    const receiverName = "ElectroFix Services";
+    const transactionNote = "Advance payment for booking";
+
+    // UPI URL তৈরি করুন
+    const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(
+      receiverName
+    )}&mc=0000&tid=&tr=&am=${amount}&cu=INR&tn=${encodeURIComponent(
+      transactionNote
+    )}`;
+
+    // UPI অ্যাপ চালু করুন
+    window.location.href = upiUrl;
+  });
+
+  // 🔹 Confirm Payment Button (I have paid)
   confirmPaymentBtn.addEventListener("click", async () => {
     // Show loading state
     buttonText.style.display = "none";
@@ -98,7 +118,7 @@ onAuthStateChanged(auth, (user) => {
     }
   });
 
-  // Cancel Button
+  // 🔹 Cancel Button
   cancelBtn.addEventListener("click", () => {
     if (confirm("Are you sure you want to cancel your booking?")) {
       localStorage.removeItem("pendingBooking");
@@ -108,7 +128,7 @@ onAuthStateChanged(auth, (user) => {
     }
   });
 
-  // OK Button in success popup
+  // 🔹 OK Button in success popup
   okBtn.addEventListener("click", () => {
     window.location.href = "../index.html";
   });

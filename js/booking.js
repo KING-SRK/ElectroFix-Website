@@ -33,7 +33,8 @@ const bookingForm = document.getElementById("bookingForm");
 const autoDetectBtn = document.getElementById("autoDetectBtn");
 const customerAddressInput = document.getElementById("customerAddress");
 const customerPincodeInput = document.getElementById("customerPincode");
-const submitBtn = document.querySelector(".submit-btn");
+const accordionTitles = document.querySelectorAll(".accordion-title");
+const formSubtitle = document.querySelector(".form-subtitle");
 
 // 🔹 Latitude & Longitude
 let userLatitude = null;
@@ -118,6 +119,47 @@ onAuthStateChanged(auth, async (user) => {
     const uid = user.uid;
     const dbRef = ref(db);
 
+    // Accordion Functionality
+    accordionTitles.forEach((title) => {
+      title.addEventListener("click", () => {
+        const parentItem = title.parentElement;
+        const content = parentItem.querySelector(".accordion-content");
+        const selectedValue = title.dataset.payment;
+
+        // Close all other accordions
+        accordionTitles.forEach((otherTitle) => {
+          const otherItem = otherTitle.parentElement;
+          if (
+            otherItem !== parentItem &&
+            otherItem.classList.contains("active")
+          ) {
+            otherItem.classList.remove("active");
+            const otherContent = otherItem.querySelector(".accordion-content");
+            otherContent.style.maxHeight = 0;
+          }
+        });
+
+        // Toggle the clicked accordion
+        parentItem.classList.toggle("active");
+        if (parentItem.classList.contains("active")) {
+          content.style.maxHeight = content.scrollHeight + "px";
+          // Update the form subtitle based on the selected option
+          if (selectedValue === "advance") {
+            formSubtitle.innerHTML =
+              "By paying in advance, you confirm your booking. <br> You'll be redirected to a secure payment page.";
+          } else if (selectedValue === "after-service") {
+            formSubtitle.innerHTML =
+              "Your booking will be confirmed immediately. <br> You can pay the technician after the service is completed.";
+          }
+        } else {
+          content.style.maxHeight = 0;
+          // Optionally, reset the subtitle when the accordion is closed
+          formSubtitle.innerHTML =
+            "Hey! Please check, before submitting everything is looks correct!";
+        }
+      });
+    });
+
     // রিয়েলটাইম ডেটাবেস থেকে ব্যবহারকারীর তথ্য লোড করা হচ্ছে
     try {
       const snapshot = await get(child(dbRef, `users/${uid}`));
@@ -129,11 +171,15 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById("customerName").value = userData.fullName ?? "";
         const customerPhoneInput = document.getElementById("customerPhone");
         const countryCode = "+91 ";
-        const phoneWithoutCode = (userData.phoneNumber ? userData.phoneNumber.replace(/^\+91\s?/, "") : "");
+        const phoneWithoutCode = userData.phoneNumber
+          ? userData.phoneNumber.replace(/^\+91\s?/, "")
+          : "";
         customerPhoneInput.value = countryCode + phoneWithoutCode;
-        
-        document.getElementById("customerAddress").value = userData.address ?? "";
-        document.getElementById("customerPincode").value = userData.postalCode ?? "";
+
+        document.getElementById("customerAddress").value =
+          userData.address ?? "";
+        document.getElementById("customerPincode").value =
+          userData.postalCode ?? "";
         autoResizeTextarea(customerAddressInput);
       } else {
         console.warn("⚠️ User profile not found in database!");
@@ -146,22 +192,13 @@ onAuthStateChanged(auth, async (user) => {
     bookingForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      submitBtn.innerText = "Booking...";
-      submitBtn.disabled = true;
-      submitBtn.style.cursor = "not-allowed";
+      const clickedButton = e.submitter; // সাবমিট করা বোতামটি খুঁজে বের করা
+      const selectedPaymentOption = clickedButton.dataset.payment;
 
-      const selectedPaymentOption = document.querySelector(
-        'input[name="paymentOption"]:checked'
-      )?.value;
-
-      // যদি কোনো পেমেন্ট অপশন নির্বাচন করা না হয়, তাহলে একটি সতর্কতা দেখাও
-      if (!selectedPaymentOption) {
-        alert("Please select a payment method.");
-        submitBtn.innerText = "Book Now";
-        submitBtn.disabled = false;
-        submitBtn.style.cursor = "pointer";
-        return;
-      }
+      // বোতামটি ডিসেবল করা
+      clickedButton.innerText = "Booking...";
+      clickedButton.disabled = true;
+      clickedButton.style.cursor = "not-allowed";
 
       // Check if location is available, if not, try to get it
       if (!userLatitude || !userLongitude) {
@@ -205,16 +242,36 @@ onAuthStateChanged(auth, async (user) => {
           console.error("❌ Error submitting booking:", error);
           alert("There was an error booking your service. Please try again.");
 
-          submitBtn.innerText = "Book Now";
-          submitBtn.disabled = false;
-          submitBtn.style.cursor = "pointer";
+          clickedButton.innerText = "Book Now";
+          clickedButton.disabled = false;
+          clickedButton.style.cursor = "pointer";
         }
       } else if (selectedPaymentOption === "advance") {
-        // 'Pay in Advance' অপশন নির্বাচন করা হলে, ডেটা লোকাল স্টোরেজে সংরক্ষণ করে পেমেন্ট পেজে রিডাইরেক্ট করা হবে।
+        // 'Pay in Advance' অপশন নির্বাচন করা হলে, ডেটা লোকাল স্টোরেজে সংরক্ষণ করা হচ্ছে
         localStorage.setItem("pendingBooking", JSON.stringify(newBooking));
         localStorage.setItem("pendingBookingUID", uid); // UID সংরক্ষণ করা হচ্ছে
-        alert("Redirecting to payment page...");
-        window.location.href = "../options-html/payment.html"; // এটি তোমার পেমেন্ট পেজের URL হবে
+
+        // 🟢 এইখানে পরিবর্তন করা হয়েছে: UPI deep link তৈরি করা হচ্ছে
+        // ⚠️ আপনার নিজের UPI ID, দোকানের নাম এবং পেমেন্টের পরিমাণ এখানে বসাতে হবে।
+        const yourUpiId = "your-upi-id@bank"; // <-- আপনার UPI ID এখানে দিন
+        const yourBusinessName = "Your Business Name"; // <-- আপনার ব্যবসার নাম দিন
+        const bookingAmount = "1.00"; // <-- পেমেন্টের আসল পরিমাণ এখানে দিন
+
+        // UPI deep link-এর ফরম্যাট
+        const upiLink = `upi://pay?pa=${yourUpiId}&pn=${encodeURIComponent(
+          yourBusinessName
+        )}&am=${bookingAmount}&tn=${encodeURIComponent(
+          "Payment for your service booking"
+        )}`;
+
+        // ব্রাউজারকে UPI অ্যাপ খুলতে বলা হচ্ছে।
+        // মোবাইলে স্বয়ংক্রিয়ভাবে অ্যাপের একটি তালিকা দেখা যাবে।
+        window.location.href = upiLink;
+
+        // বোতামটিকে আবার সক্রিয় করা হচ্ছে, কারণ পেমেন্ট অ্যাপে চলে গেলে স্ক্রিপ্টটি কাজ করা বন্ধ করে দেবে।
+        clickedButton.innerText = "Proceed to Pay";
+        clickedButton.disabled = false;
+        clickedButton.style.cursor = "pointer";
       }
     });
   } else {

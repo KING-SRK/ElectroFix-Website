@@ -114,6 +114,16 @@ body {
   transform: scale(1.02);
 }
 
+.visiting-charge {
+  display: block;
+  font-size: 0.8rem;
+  text-align: right;
+  background: linear-gradient(90deg, #2ecc71, #27ae60);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-style: italic;
+}
+
 /* --- Responsive Design --- */
 @media (max-width: 768px) {
   .wm-services {

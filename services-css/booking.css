@@ -104,68 +104,6 @@ body {
   border-color: #3f51b5;
 }
 
-/* Payment Options */
-.payment-options {
-  margin-top: 20px;
-}
-
-.payment-options label {
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.radio-label {
-  display: flex;
-  align-items: center;
-  background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
-  padding: 12px 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.radio-label:hover {
-  background-color: #e2e6ea;
-}
-
-.radio-label input[type="radio"] {
-  margin-right: 12px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border: 2px solid #ced4da;
-  border-radius: 50%;
-  outline: none;
-  cursor: pointer;
-  position: relative;
-  transition: border-color 0.2s ease;
-}
-
-.radio-label input[type="radio"]:checked {
-  border-color: #007bff;
-}
-
-.radio-label input[type="radio"]:checked::before {
-  content: "";
-  width: 10px;
-  height: 10px;
-  background-color: #007bff;
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
 .btn {
   background: linear-gradient(135deg, #3f51b5, #2196f3);
   color: #fff;
@@ -184,7 +122,6 @@ body {
 }
 
 /* booking.css */
-
 .form-group textarea {
   width: 100%;
   padding: 12px;
@@ -402,6 +339,109 @@ body {
   background-color: #5a6268;
 }
 
+/* --- New Accordion Styles --- */
+
+/* Accordion container */
+.accordion-container {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+}
+
+/* Accordion item */
+.accordion-item {
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.3s ease;
+}
+
+.accordion-item:last-child {
+  border-bottom: none;
+}
+
+/* Accordion header/title */
+.accordion-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  cursor: pointer;
+  background-color: #f8f9fa;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.accordion-title:hover {
+  background-color: #e9ecef;
+}
+
+/* Label inside accordion header */
+.accordion-label {
+  flex-grow: 1;
+  color: #333;
+}
+
+/* Chevron icon rotation */
+.accordion-icon {
+  font-size: 16px;
+  color: #555;
+  transition: transform 0.3s ease;
+}
+
+.accordion-item.active .accordion-icon {
+  transform: rotate(180deg);
+}
+
+/* Accordion content */
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  padding: 0 20px; /* Horizontal padding রাখো, vertical padding শুধু active হলে দিবে */
+}
+
+.accordion-item.active .accordion-content {
+  padding: 15px 20px;
+}
+
+/* Paragraph inside content */
+.accordion-content p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Inner buttons - Updated for better visibility */
+.accordion-content .btn {
+  margin-top: 15px;
+  padding: 12px 24px;
+  background: linear-gradient(
+    135deg,
+    #3f51b5,
+    #2196f3
+  ); /* Matching the main button's style */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600; /* Increased font-weight */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Added a stronger shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.accordion-content .btn:hover {
+  transform: translateY(-2px); /* Slight lift on hover */
+  background: linear-gradient(
+    135deg,
+    #2196f3,
+    #3f51b5
+  ); /* Inverted gradient for hover effect */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -443,9 +483,11 @@ body {
   flex-direction: column;
   z-index: 9999;
 }
+
 .loading-screen.hidden {
   display: none;
 }
+
 .spinner {
   width: 40px;
   height: 40px;
@@ -455,6 +497,7 @@ body {
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
 }
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
