@@ -5,6 +5,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebas
 import {
   getAuth,
   onAuthStateChanged,
+  signOut,
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import {
   getDatabase,
@@ -90,16 +91,15 @@ if (swiperElement) {
 // =======================
 // 🔹 User Info UI Handling (Firebase → Mobile + Desktop)
 // =======================
+const userNameMobile = document.getElementById("user-name-display");
+const userAddressMobile = document.getElementById("user-address-display");
+const userInfoMobile = document.querySelector(".user-info-mobile");
+const userInfoDesktop = document.querySelector(".user-info-desktop");
+const loginBtn = document.querySelector(".login-btn");
+const signupBtn = document.querySelector(".signup-btn");
+const logoutBtn = document.getElementById("logout-btn");
+
 onAuthStateChanged(auth, async (user) => {
-  const userNameMobile = document.getElementById("user-name-display");
-  const userAddressMobile = document.getElementById("user-address-display");
-  const userInfoMobile = document.querySelector(".user-info-mobile");
-  const userInfoDesktop = document.querySelector(".user-info-desktop");
-
-  const loginBtn = document.querySelector(".login-btn");
-  const signupBtn = document.querySelector(".signup-btn");
-  const logoutBtn = document.getElementById("logout-btn");
-
   if (user) {
     try {
       const snapshot = await get(child(ref(db), `users/${user.uid}`));
@@ -129,7 +129,7 @@ onAuthStateChanged(auth, async (user) => {
       console.error("Error fetching user info:", err);
     }
   } else {
-    // লগআউট বা লগইন না করা অবস্থায়
+    // লগআউট বা লগইন না করা অবস্থায়
     if (userInfoMobile) userInfoMobile.classList.remove("active");
     if (userNameMobile) userNameMobile.textContent = "";
     if (userAddressMobile) userAddressMobile.textContent = "";
@@ -141,3 +141,44 @@ onAuthStateChanged(auth, async (user) => {
     if (signupBtn) signupBtn.style.display = "inline-block";
   }
 });
+
+// =======================
+// 🔹 Logout button click handler
+// =======================
+const logoutPopup = document.getElementById("logout-popup");
+const confirmLogoutBtn = document.getElementById("confirm-logout-btn");
+const cancelLogoutBtn = document.getElementById("cancel-logout-btn");
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (logoutPopup) {
+      logoutPopup.style.display = "flex";
+    }
+  });
+}
+
+if (confirmLogoutBtn) {
+  confirmLogoutBtn.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      console.log("User logged out successfully");
+      window.location.href = "index.html";
+    } catch (err) {
+      console.error("Logout error:", err);
+      alert("Logout failed!");
+    } finally {
+      if (logoutPopup) {
+        logoutPopup.style.display = "none";
+      }
+    }
+  });
+}
+
+if (cancelLogoutBtn) {
+  cancelLogoutBtn.addEventListener("click", () => {
+    if (logoutPopup) {
+      logoutPopup.style.display = "none";
+    }
+  });
+}
