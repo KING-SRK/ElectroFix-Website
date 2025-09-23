@@ -401,12 +401,14 @@
 
             try {
               const res = await fetch(
-                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=YOUR_GOOGLE_MAPS_API_KEY`
+                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=AIzaSyCxr8aEnQVMhkaHWl56imdr_LoUUaKoM9Q`
               );
               const data = await res.json();
 
-              if (data.status !== "OK")
-                throw new Error("Failed to fetch address");
+              if (data.status !== "OK" || data.results.length === 0) {
+                // API সফল নয় বা কোনো ঠিকানা পাওয়া যায়নি
+                throw new Error("No address found for this location.");
+              }
 
               const result = data.results[0];
               const components = result.address_components;
@@ -460,7 +462,9 @@
               }
             } catch (error) {
               console.error("Error fetching detailed address:", error);
-              addressInput.value = `${lat}, ${lon}`;
+              // ✅ এখানে আপনার কোড থেকে ল্যাটিটিউড/লংগিটিউড দেখানো বাদ দেওয়া হয়েছে
+              addressInput.value = ""; // ঠিকানা খালি রাখা হয়েছে
+              alert("Error fetching address. Please enter it manually.");
             } finally {
               hideLoader();
             }
