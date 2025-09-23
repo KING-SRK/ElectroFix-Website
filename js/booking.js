@@ -255,7 +255,7 @@ onAuthStateChanged(auth, async (user) => {
         // ⚠️ এখানে আপনার সঠিক UPI ID এবং ব্যবসার নাম দিন। কোনো বিশেষ অক্ষর ব্যবহার করবেন না।
         const yourUpiId = "9088879219@okbizaxis"; // <-- আপনার UPI ID এখানে দিন
         const yourBusinessName = "ElectroFix"; // <-- আপনার কোম্পানির নাম এখানে দিন
-        const bookingAmount = "1.00"; // <-- পেমেন্টের আসল পরিমাণ এখানে দিন
+        const bookingAmount = "10.00"; // <-- পেমেন্টের আসল পরিমাণ এখানে দিন
 
         // UPI deep link-এর ফরম্যাট
         const upiLink = `upi://pay?pa=${yourUpiId}&pn=${encodeURIComponent(
